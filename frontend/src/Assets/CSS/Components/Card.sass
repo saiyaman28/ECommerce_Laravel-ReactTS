@@ -1,0 +1,42 @@
+.card 
+    width: 100% !important
+    background-color: white !important
+    border-radius: unset !important
+    border-radius: 0 !important
+
+    > div 
+        position: relative !important
+        width: 100% !important
+        aspect-ratio: 1 !important
+
+        > img
+            width: 100% !important
+            height: 100% !important
+            transition: .33s !important
+
+        &:has( img.bgimage )
+
+            > img
+                position: absolute !important
+
+                &.bgimage
+                    height: calc( 100% - 33% ) !important
+                    opacity: 0 !important
+
+                &:nth-child(2)
+                    width: 100% !important
+                    bottom: -33px !important
+                    z-index: 100 !important
+
+    
+    > h2 
+        justify-content: center !important
+
+    :hover
+
+        &:has( img.bgimage )
+
+            > img
+
+                &.bgimage
+                    opacity: 1 !important

@@ -1,0 +1,80 @@
+header, header *:not( ul ):not( div.collapse, div.collapsing )
+    display: flex !important
+
+header 
+    background-color: #851022 !important
+    width: 100% !important
+    justify-content: center !important
+    top: 0 !important
+    position: sticky !important
+    z-index: 999 !important
+
+    > .container 
+        width: 100% !important
+        justify-content: space-between !important
+        align-items: center !important
+
+        > h1 
+            color: white !important
+        
+        > nav 
+            
+            > a 
+                color: white !important
+                font-size: 18px !important
+                font-weight: 700 !important
+                text-decoration: none !important
+                padding: 18px !important
+
+
+@media only screen and (min-width: 1267px) 
+
+    header 
+    
+        > .container
+            max-width: 1823px !important
+            padding: 13px 33px !important
+        
+            > nav 
+
+                > a:hover 
+                    background-color: #357266
+                    color: #851022 !important
+
+@media only screen and (min-width: 767px) and (max-width: 1266px) 
+
+    header 
+    
+        > .container
+            max-width: 1266px !important
+            padding: 13px 33px !important
+
+@media only screen and (max-width: 766px) 
+
+    header 
+        flex-direction: column !important
+        padding: 13px 0 !important
+    
+        > .container 
+            padding: 8px 23px !important
+        
+            > .burger 
+                width: calc( 28px + ( 28px / 2 ) ) !important
+
+        > div.collapse, > div.collapsing
+
+            > nav
+                flex-direction: column !important
+                overflow: auto !important
+                scrollbar-width: none !important
+                gap: 13px !important
+                padding-block: 13px !important
+    
+                > a 
+                    position: relative !important
+                    font-weight: 700 !important
+                    text-transform: uppercase !important
+                    text-decoration: none !important
+                    padding: 8px 23px !important
+                    color: white !important
+                    font-size: 18px !important

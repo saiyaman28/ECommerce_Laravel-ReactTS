@@ -1,0 +1,29 @@
+main, main * 
+    display: flex !important
+
+main 
+    width: 100% !important
+    flex-direction: column !important
+    align-items: center !important
+    justify-self: center !important
+    min-height: calc( 100vh - 88px ) !important 
+    gap: 13px !important
+
+    &.row 
+        flex-direction: unset !important
+
+@media only screen and (min-width: 1267px) 
+
+    main 
+        max-width: 1823px !important
+        padding: 8px 13px 33px !important
+
+@media only screen and (min-width: 767px) and (max-width: 1266px) 
+
+    main 
+        padding: 8px 13px 33px !important
+
+@media only screen and (max-width: 766px) 
+
+    main 
+        padding: 8px 13px 13px !important
