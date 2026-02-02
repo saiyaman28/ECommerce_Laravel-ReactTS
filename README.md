@@ -1,2 +1,5 @@
-# ECommerce_Laravel-ReactTS
-E-Commerce System
+# ECommerce
+
+BACKEND: **Laravel 11** <br>
+FRONTEND: **ReactTS**
+

@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { registerUser } from "../Layout/Guest";
+import { loginUser } from "../Layout/Guest";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function IndexPage() {
+const Login = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,10 +15,10 @@ export default function IndexPage() {
     setLoading(true);
 
     try {
-      await registerUser(name, email, password);
+      await loginUser(email, password);
       navigate("/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -28,18 +27,9 @@ export default function IndexPage() {
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.card}>
-        <h2>Register</h2>
+        <h2>Login</h2>
 
         {error && <p style={styles.error}>{error}</p>}
-
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          style={styles.input}
-        />
 
         <input
           type="email"
@@ -60,16 +50,16 @@ export default function IndexPage() {
         />
 
         <button disabled={loading} style={styles.button}>
-          {loading ? "Creating account..." : "Register"}
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         <p>
-          Already have an account? <Link to="/">Login</Link>
+          No account? <Link to="/register">Register</Link>
         </p>
       </form>
     </div>
   );
-}
+};
 
 const styles: any = {
   container: {
@@ -94,7 +84,7 @@ const styles: any = {
   button: {
     width: "100%",
     padding: 10,
-    background: "#16a34a",
+    background: "#2563eb",
     color: "#fff",
     border: "none",
     borderRadius: 4,
@@ -105,3 +95,5 @@ const styles: any = {
     marginBottom: 10,
   },
 };
+
+export default Login;
