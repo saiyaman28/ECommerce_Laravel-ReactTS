@@ -1,29 +1,33 @@
 import { useState } from "react";
-import { registerUser } from "../Layout/Guest";
+import { useStateContext } from "../Context_Provider";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function IndexPage() {
-  const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { register } = useStateContext()
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    contact: "",
+    email: "",
+    password: "",
+  })
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+const handleSubmit = async (e: any) => {
+  e.preventDefault()
+  setLoading(true)
+  setError("")
 
-    try {
-      await registerUser(name, email, password);
-      navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    await register(form)
+  } catch (err: any) {
+    setError(err.response?.data?.message || "Registration failed")
+  } finally {
+    setLoading(false)
+  }
+}
+
 
   return (
     <div style={styles.container}>
@@ -32,32 +36,11 @@ export default function IndexPage() {
 
         {error && <p style={styles.error}>{error}</p>}
 
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          style={styles.input}
-        />
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
+        <input type="text" placeholder="First Name" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} required style={styles.input} />
+        <input type="text" placeholder="Last Name" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} required style={styles.input} />
+        <input type="text" placeholder="Contact" value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} required style={styles.input} />
+        <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required style={styles.input} />
+        <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required style={styles.input} />
 
         <button disabled={loading} style={styles.button}>
           {loading ? "Creating account..." : "Register"}

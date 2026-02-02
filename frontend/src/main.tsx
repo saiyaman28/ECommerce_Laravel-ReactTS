@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
+import { ContextProvider } from "./Context_Provider";
 import router from './router'
 import './Assets/CSS/Base.sass'
 import './Assets/Bootstrap/Bootstrap.css'
@@ -17,6 +18,8 @@ const root = ReactDOM.createRoot(rootElement as HTMLElement)
 
 root.render(
     <StrictMode>
-        <RouterProvider router={router} />
+        <ContextProvider>
+            <RouterProvider router={router} />
+        </ContextProvider>
     </StrictMode>
 )

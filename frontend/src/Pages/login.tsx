@@ -1,65 +1,34 @@
-import { useState } from "react";
-import { loginUser } from "../Layout/Guest";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react"
+import { useStateContext } from "../Context_Provider";
 
-const Login = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function Login() {
+  const { login } = useStateContext()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+const submit = async (e: any) => {
+  e.preventDefault()
 
-    try {
-      await loginUser(email, password);
-      navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  console.log("LOGIN PAYLOAD:", {
+    email,
+    password,
+  })
+
+  try {
+    await login({ email, password })
+  } catch (err: any) {
+    console.error("LOGIN ERROR:", err.response?.data || err)
+  }
+}
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.card}>
-        <h2>Login</h2>
-
-        {error && <p style={styles.error}>{error}</p>}
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
-
-        <button disabled={loading} style={styles.button}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-        <p>
-          No account? <Link to="/register">Register</Link>
-        </p>
-      </form>
-    </div>
-  );
-};
+    <form onSubmit={submit}>
+      <input onChange={e => setEmail(e.target.value)} />
+      <input type="password" onChange={e => setPassword(e.target.value)} />
+      <button>Login</button>
+    </form>
+  )
+}
 
 const styles: any = {
   container: {
@@ -96,4 +65,4 @@ const styles: any = {
   },
 };
 
-export default Login;
+
