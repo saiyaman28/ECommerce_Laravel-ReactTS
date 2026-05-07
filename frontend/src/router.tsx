@@ -12,7 +12,10 @@ import ChangePasswordPage from './Pages/change_password'
 
 import DashboardPage from './Pages/dashboard'
 
+// import DashboardPage from './Pages/dashboard'
+
 import AdminDashboardPage from './Pages/AdminDashboard'
+import OrderPage from './Pages/Ordering'
 
 export default createBrowserRouter([
 
@@ -65,6 +68,10 @@ export default createBrowserRouter([
             {
                 path: "admin/dashboard",
                 element: <AdminDashboardPage />
+            },
+            {
+                path: "admin/orders",
+                element: <OrderPage />
             }
         ]
     }

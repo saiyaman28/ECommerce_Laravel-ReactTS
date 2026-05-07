@@ -3,7 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AuthController;
-
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductVariantController;
+use App\Http\Controllers\Api\OrderController;
+use App\Models\ProductVariant;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,3 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::put('/change-password', [AuthController::class, 'changePassword']);
 });
+
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('products', ProductController::class);
+Route::apiResource('product_variants', ProductVariantController::class);
+Route::apiResource('orders', OrderController::class);

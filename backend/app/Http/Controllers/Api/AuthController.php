@@ -74,6 +74,25 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out']);
     }
 
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json([
+                'message' => __($status)
+            ])
+            : response()->json([
+                'message' => __($status)
+            ], 400);
+    }
+
     public function resetPassword(Request $request)
     {
         $request->validate([
