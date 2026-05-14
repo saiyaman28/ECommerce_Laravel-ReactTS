@@ -3,25 +3,25 @@ import { useStateContext } from "../context_provider"
 import { Header } from "../Exporter/Components_Exporter"
 
 export default function GuestLayout() {
-  const { user, token, loading } = useStateContext()
+    const { user, token, loading } = useStateContext()
 
-  // ⏳ wait until auth state is known
-  if (loading) {
-    return null // or spinner
-  }
-
-  // 👇 already logged in → redirect ONCE
-  if (token && user) {
-    if (user.role === "admin") {
-      return <Navigate to="/admin/dashboard" replace />
+    if (loading) {
+        return null
     }
-    return <Navigate to="/dashboard" replace />
-  }
 
-  return (
-    <>
-      <Header />
-      <Outlet />
-    </>
-  )
+    if (user && token) {
+        if (user.role === "admin") {
+            return <Navigate to="/admin/dashboard" replace />
+        }
+        else {
+            return <Navigate to="/dashboard" replace />
+        }
+    }
+
+    return (
+        <>
+            <Header />
+            <Outlet />
+        </>
+    )
 }

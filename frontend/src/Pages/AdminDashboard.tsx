@@ -5,7 +5,7 @@ import api from "../axios";
 
 type Category = {
   id: number;
-  category: string;
+  category_name: string;
 };
 
 type Product = {
@@ -22,7 +22,6 @@ type ProductVariant = {
   stock: number;
   product: Product;
 };
-
 
 /* ================= COMPONENT ================= */
 
@@ -87,9 +86,12 @@ export default function AdminDashboard() {
   /* ================= CATEGORY ================= */
 
   const createCategory = async () => {
-    if (!categoryName) return;
+    if (!categoryName.trim()) return;
 
-    await api.post("/categories", { category: categoryName });
+    await api.post("/categories", {
+      category_name: categoryName,
+    });
+
     setCategoryName("");
     fetchCategories();
   };
@@ -101,7 +103,7 @@ export default function AdminDashboard() {
 
   const saveCategory = async (id: number) => {
     await api.put(`/categories/${id}`, {
-      category: editingCategoryName,
+      category_name: editingCategoryName,
     });
 
     setEditingCategoryId(null);
@@ -112,7 +114,7 @@ export default function AdminDashboard() {
   /* ================= PRODUCT ================= */
 
   const createProduct = async () => {
-    if (!productName || !selectedCategory) return;
+    if (!productName.trim() || !selectedCategory) return;
 
     await api.post("/products", {
       product_name: productName,
@@ -129,13 +131,11 @@ export default function AdminDashboard() {
     fetchProducts();
   };
 
-  /* ---- PRODUCT EDIT ---- */
-
   const startEditProduct = (p: Product) => {
     setEditingProductId(p.id);
     setEditingProductData({
       product_name: p.product_name,
-      category_id: String(p.category.id),
+      category_id: String(p.category?.id || ""),
     });
   };
 
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
   /* ================= VARIANT ================= */
 
   const createVariant = async () => {
-    if (!selectedProductId || !variantName) return;
+    if (!selectedProductId || !variantName.trim()) return;
 
     await api.post("/product_variants", {
       product_id: Number(selectedProductId),
@@ -224,10 +224,10 @@ export default function AdminDashboard() {
               </>
             ) : (
               <>
-                {c.category}
+                {c.category_name}
                 <button onClick={() => {
                   setEditingCategoryId(c.id);
-                  setEditingCategoryName(c.category);
+                  setEditingCategoryName(c.category_name);
                 }}>
                   Edit
                 </button>
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
         <option value="">Select Category</option>
         {categories.map((c) => (
           <option key={c.id} value={c.id}>
-            {c.category}
+            {c.category_name}
           </option>
         ))}
       </select>
@@ -289,7 +289,7 @@ export default function AdminDashboard() {
                 >
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.category}
+                      {c.category_name}
                     </option>
                   ))}
                 </select>
@@ -299,7 +299,7 @@ export default function AdminDashboard() {
               </>
             ) : (
               <>
-                {p.product_name} - {p.category.category}
+                {p.product_name} - {p.category?.category_name ?? "No Category"}
                 <button onClick={() => startEditProduct(p)}>Edit</button>
                 <button onClick={() => deleteProduct(p.id)}>Delete</button>
               </>
@@ -313,6 +313,7 @@ export default function AdminDashboard() {
       {/* ================= VARIANT ================= */}
       <h2>Variants</h2>
 
+      {/* FIXED: correct product selector */}
       <select
         value={selectedProductId}
         onChange={(e) => setSelectedProductId(e.target.value)}
@@ -362,6 +363,7 @@ export default function AdminDashboard() {
                   })
                 }
               />
+
               <input
                 value={editingVariantData.price}
                 onChange={(e) =>
@@ -371,6 +373,7 @@ export default function AdminDashboard() {
                   })
                 }
               />
+
               <input
                 value={editingVariantData.stock}
                 onChange={(e) =>
@@ -386,13 +389,13 @@ export default function AdminDashboard() {
           ) : (
             <>
               <b>{v.product.product_name}</b> | {v.variant_name} | ₱{v.price} | Stock: {v.stock}
-
               <button onClick={() => startEditVariant(v)}>Edit</button>
               <button onClick={() => deleteVariant(v.id)}>Delete</button>
             </>
           )}
         </div>
       ))}
+
     </div>
   );
 }

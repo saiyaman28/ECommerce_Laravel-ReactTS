@@ -1,244 +1,156 @@
-import React, { useEffect, useState } from "react";
-import api from "../axios";
+import React, { useEffect, useState } from "react"
+import axiosClient from "../axios"
+import { useNavigate } from "react-router-dom"
+import '../Assets/CSS/Pages/Product.sass'
+import { useStateContext } from "../context_provider"
+import { Main, Section, Group, Href, Inputbox, Button } from '../Exporter/Components_Exporter'
+import { AddPageTitle, AddClassBody, UseScreenWidth } from '../Exporter/Hooks_Exporter'
+import { format } from "date-fns"
 
-/* ================= TYPES ================= */
+type Product = {
+    id: number
+    product_name: string
+    category_id: number
+    description: string
+}
 
 type Variant = {
-  id: number;
-  sku: string;
-  variant_name: string;
-  price: number;
-  stock: number;
-};
+  id: number
+  variant_name: string
+  price: number
+  stock: number
+}
 
 type OrderItem = {
   product_variant_id: number;
   quantity: number;
-};
+}
 
-type Order = {
-  id: number;
-  customer_name: string;
-  customer_email?: string;
-  total_price: number;
-  status: "pending" | "processing" | "shipped" | "delivered";
-};
+export default function OrderListPage() {
+    const { user } = useStateContext()
+    AddPageTitle(`Orders`)
+    AddClassBody(`Product-Page`)
+    const screenwidth = UseScreenWidth()
 
+    const [products, setProducts] = useState<Product[]>([])
+    const [variants, setVariants] = useState<Variant[]>([])
+    const [selectedItems, setSelectedItems] = useState<OrderItem[]>([])
 
-/* ================= COMPONENT ================= */
+    const [customerName, setCustomerName] = useState(`${user?.id}`)
 
-export default function OrderPage() {
-  const [variants, setVariants] = useState<Variant[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
+    useEffect(() => {
+        fetchProducts()
+        fetchProductVariants()
+    }, [])
 
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
+    const fetchProducts = async () => {
+        const res = await axiosClient.get("/products")
+        setProducts(res.data || [])
+    }
 
-  /* ================= FETCH ================= */
+    const fetchProductVariants = async () => {
+        const res = await axiosClient.get("/product_variants")
+        setVariants(res.data || [])
+    }
 
-  const fetchVariants = async () => {
-    const res = await api.get("/product_variants");
-    setVariants(res.data || []);
-  };
+    const addItem = (variantId: number) => {
+        const variant = variants.find((v) => v.id === variantId)
 
-  const fetchOrders = async () => {
-    const res = await api.get("/orders");
-    setOrders(res.data || []);
-  };
+        if (!variant) return
 
-  useEffect(() => {
-    fetchVariants();
-    fetchOrders();
-  }, []);
+        if (variant.stock <= 0) {
+            alert("Out of stock")
+            return
+        }
 
-  /* ================= ORDER ITEM LOGIC ================= */
+        const exists = selectedItems.find(
+            (i) => i.product_variant_id === variantId
+        )
 
-  const addItem = (variantId: number) => {
-    const exists = selectedItems.find(
-      (i) => i.product_variant_id === variantId
-    );
+        if (exists) return
 
-    if (exists) return;
+        setSelectedItems([
+            ...selectedItems,
+            {
+                product_variant_id: variantId,
+                quantity: 1,
+            },
+        ])
+    }
 
-    setSelectedItems([
-      ...selectedItems,
-      { product_variant_id: variantId, quantity: 1 },
-    ]);
-  };
+    const removeItem = (variantId: number) => {
+        setSelectedItems(selectedItems.filter((i) => i.product_variant_id !== variantId))
+    }
 
-  const removeItem = (variantId: number) => {
-    setSelectedItems(
-      selectedItems.filter(
-        (i) => i.product_variant_id !== variantId
-      )
-    );
-  };
+    const updateQuantity = (variantId: number, qty: number) => {
+        const variant = variants.find((v) => v.id === variantId)
 
-  const updateQuantity = (variantId: number, qty: number) => {
-    setSelectedItems(
-      selectedItems.map((i) =>
-        i.product_variant_id === variantId
-          ? { ...i, quantity: qty }
-          : i
-      )
-    );
-  };
+        if (!variant) return
 
-  /* ================= TOTAL ================= */
+        if (qty < 1) qty = 1
 
-  const calculateTotal = () => {
-    return selectedItems
-      .reduce((sum, item) => {
-        const v = variants.find(
-          (x) => x.id === item.product_variant_id
-        );
-        return v ? sum + v.price * item.quantity : sum;
-      }, 0)
-      .toFixed(2);
-  };
+        if (qty > variant.stock) {
+            qty = variant.stock
+        }
 
-  /* ================= CREATE ORDER ================= */
+        setSelectedItems(
+            selectedItems.map((i) => i.product_variant_id === variantId ? { ...i, quantity: qty } : i )
+        )
+    }
+    
+    const calculateTotal = () => {
+        return selectedItems
+            .reduce((sum, item) => {
+                const v = variants.find((x) => x.id === item.product_variant_id)
+                return v ? sum + v.price * item.quantity : sum
+            }, 0).toFixed(2)
+    }
 
-  const submitOrder = async () => {
-    if (!customerName || selectedItems.length === 0) return;
+    const submitOrder = async () => {
+        if (selectedItems.length === 0) return;
 
-    await api.post("/orders", {
-      customer_name: customerName,
-      customer_email: customerEmail,
-      items: selectedItems,
-    });
+        await axiosClient.post("/orders", {
+            customer_name: customerName,
+            items: selectedItems,
+        })
+        setSelectedItems([])
+    }
 
-    setCustomerName("");
-    setCustomerEmail("");
-    setSelectedItems([]);
-    fetchOrders();
-  };
+    return (
+            <Main>
+                <Section Title={`ORDERS`} ID={`list-product`}>
+                    <Group>
+                        {variants.map((v) => (
+                            <Group Row key={v.id}>
+                                <>
+                                    {products.find(c => c.id === v.product_id)?.product_name} - {v.variant_name} - ₱{v.price} - Stock:{v.stock}
+                                    <Button Title={`Add`} OnClick={() => addItem(v.id)} Disabled={v.stock <= 0} />
+                                </>
+                            </Group>
+                        ))}
+                    </Group>
+                </Section>
+                <Section Title={`CART`} ID={`list-product`}>
+                    <Group>
+                        {selectedItems.map((i) => {
+                            const v = variants.find((x) => x.id === i.product_variant_id)
 
-  /* ================= UPDATE STATUS ================= */
+                            if (!v) return null;
 
-  const updateStatus = async (id: number, status: string) => {
-    await api.put(`/orders/${id}`, { status });
-    fetchOrders();
-  };
-
-  /* ================= DELETE ORDER ================= */
-
-  const deleteOrder = async (id: number) => {
-    await api.delete(`/orders/${id}`);
-    fetchOrders();
-  };
-
-  /* ================= UI ================= */
-
-  return (
-    <div style={{ padding: 20 }}>
-
-      {/* ================= CREATE ORDER ================= */}
-      <h2>Create Order</h2>
-
-      <input
-        placeholder="Customer Name"
-        value={customerName}
-        onChange={(e) => setCustomerName(e.target.value)}
-      />
-
-      <input
-        placeholder="Customer Email"
-        value={customerEmail}
-        onChange={(e) => setCustomerEmail(e.target.value)}
-      />
-
-      <hr />
-
-      <h3>Products</h3>
-
-      {variants.map((v) => (
-        <div key={v.id}>
-          {v.variant_name} | ₱{v.price}
-
-          <button onClick={() => addItem(v.id)}>
-            Add
-          </button>
-        </div>
-      ))}
-
-      <hr />
-
-      <h3>Selected Items</h3>
-
-      {selectedItems.map((i) => {
-        const v = variants.find(
-          (x) => x.id === i.product_variant_id
-        );
-
-        if (!v) return null;
-
-        return (
-          <div key={v.id}>
-            {v.variant_name}
-
-            <input
-              type="number"
-              value={i.quantity}
-              min={1}
-              onChange={(e) =>
-                updateQuantity(
-                  v.id,
-                  Number(e.target.value)
-                )
-              }
-            />
-
-            <button onClick={() => removeItem(v.id)}>
-              Remove
-            </button>
-          </div>
-        );
-      })}
-
-      <h3>Total: ₱{calculateTotal()}</h3>
-
-      <button onClick={submitOrder}>
-        Submit Order
-      </button>
-
-      {/* ================= ORDERS CRUD ================= */}
-      <hr />
-
-      <h2>Orders (CRUD)</h2>
-
-      {orders.map((o) => (
-        <div
-          key={o.id}
-          style={{
-            border: "1px solid #ccc",
-            padding: 10,
-            marginBottom: 10,
-          }}
-        >
-          <b>{o.customer_name}</b>
-          <div>{o.customer_email}</div>
-          <div>Total: ₱{o.total_price}</div>
-
-          {/* STATUS UPDATE */}
-          <select
-            value={o.status}
-            onChange={(e) =>
-              updateStatus(o.id, e.target.value)
-            }
-          >
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-          </select>
-
-          <button onClick={() => deleteOrder(o.id)}>
-            Delete
-          </button>
-        </div>
-      ))}
-    </div>
-  );
+                            return (
+                                <Group Row key={v.id}>
+                                    {products.find(c => c.id === v.product_id)?.product_name} - {v.variant_name} - ₱{v.price} - 
+                                    <Inputbox Type={`number`} Title={`Quantity`} Name={`Quantity`} Value={i.quantity} Min={1} Max={v.stock} OnChange={(e) =>updateQuantity(v.id,Number(e.target.value))} Required />
+                                    <Button Title={`Remove`} OnClick={() => removeItem(v.id)} />
+                                </Group>
+                            )
+                        })}
+                    </Group>
+                    <Group>
+                        Total: ₱{calculateTotal()}
+                        <Button Title={`Confirm Order`} OnClick={submitOrder} />
+                    </Group>
+                </Section>
+            </Main>
+    )
 }

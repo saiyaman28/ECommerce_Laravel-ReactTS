@@ -1,50 +1,48 @@
-import { useState } from "react"
-import { useStateContext } from "../Context_Provider"
+import { React, useState } from 'react'
+import { useStateContext } from '../context_provider'
+import '../Assets/CSS/Pages/Forgot_Password.sass'
+import { Main, Section, Group, Href, Inputbox, Button } from '../Exporter/Components_Exporter'
+import { AddPageTitle, AddClassBody, UseScreenWidth } from '../Exporter/Hooks_Exporter'
 
 export default function ForgotPasswordPage() {
-  const { forgotPassword } = useStateContext()
+    AddPageTitle(`Forgot Password`)
+    AddClassBody(`Forgot-Password-Page`)
+    const screenwidth = UseScreenWidth()
+    
+    const { forgotPassword } = useStateContext()
 
-  const [email, setEmail] = useState("")
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState(``)
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-    setMessage("")
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
 
-    try {
-      const msg = await forgotPassword(email)
-      setMessage(msg)
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Something went wrong")
-    } finally {
-      setLoading(false)
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
+
+        setLoading(true)
+        setError(``)
+
+        try {
+            await forgotPassword(email)
+            alert(`Password reset link has been sent.`)
+        } 
+        catch (err: any) {
+            setError(err.response?.data?.message || `Something went wrong`)
+        }
+        setLoading(false)
     }
-  }
 
-  return (
-    <div>
-      <h1>Forgot Password</h1>
+    return (
+        <Main>
+            <Section Title={`Forgot Password`} ID={`forgot-password`}>
+                <form onSubmit={handleSubmit}>
+                    {error && <p>{error}</p>}
 
-      <form onSubmit={submit}>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-
-        <button disabled={loading}>
-          {loading ? "Sending..." : "Send Reset Link"}
-        </button>
-      </form>
-
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
-  )
+                    <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={email} OnChange={(e) => setEmail(e.target.value)} Required />
+                  
+                    <Button Submit Disabled={loading} Title={loading ? `Submitting...` : `Submit`} />
+                </form>
+            </Section>
+        </Main>
+    )
 }

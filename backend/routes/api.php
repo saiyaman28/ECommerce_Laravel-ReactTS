@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductVariantController;
 use App\Http\Controllers\Api\OrderController;
-use App\Models\ProductVariant;
+use App\Http\Controllers\Api\OrderItemController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -20,9 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::put('/change-password', [AuthController::class, 'changePassword']);
+    Route::apiResource('orders', OrderController::class);
 });
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('product_variants', ProductVariantController::class);
-Route::apiResource('orders', OrderController::class);
+Route::apiResource('order_items', OrderItemController::class);
+// Route::get('/order_items/by-order/{order_id}', [OrderItemController::class, 'byOrder']);

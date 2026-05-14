@@ -4,6 +4,7 @@ import '../../Assets/CSS/Components/Button.sass'
 
 type ButtonMode = {
     Redirect?: string
+    OnClick?: () => void
     Navigate?: string
     Submit?: boolean
     Radio?: boolean
@@ -20,7 +21,7 @@ type ButtonProps = {
     Disabled?: boolean
 }
 
-export default function Button({ ID, Class, Title, Name, Value, Accept, Disabled, Redirect, Submit, Radio, File }: ButtonProps & ButtonMode) {
+export default function Button({ ID, Class, Title, Name, Value, Accept, Disabled, Redirect, OnClick, Submit, Radio, File }: ButtonProps & ButtonMode) {
     const Navigation = useNavigate()
 
     const HandleNavigation = () => {
@@ -35,8 +36,16 @@ export default function Button({ ID, Class, Title, Name, Value, Accept, Disabled
                     {Title}
                 </button>
             }
+            {(OnClick) &&
+                <button id={ID} className={Class} disabled={Disabled} onClick={OnClick} >
+                    {Title}
+                </button>
+
+            }
             {Submit &&
-                <input type={`submit`} id={ID} className={Class} disabled={Disabled}/>
+                <button type={`submit`} id={ID} className={Class} disabled={Disabled}>
+                    {Title}
+                </button>
             }
             {Radio &&
                 <label className={Class}>

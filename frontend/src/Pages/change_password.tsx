@@ -1,77 +1,65 @@
 import { useState } from "react"
 import { useStateContext } from "../context_provider"
+import '../Assets/CSS/Pages/Change_Password.sass'
+import { Main, Section, Group, Href, Inputbox, Button } from '../Exporter/Components_Exporter'
+import { AddPageTitle, AddClassBody, UseScreenWidth } from '../Exporter/Hooks_Exporter'
 
 export default function ChangePasswordPage() {
-  const { changePassword } = useStateContext()
+    AddPageTitle(`Change Password`)
+    AddClassBody(`Change-Password-Page`)
+    const screenwidth = UseScreenWidth()
 
-  const [form, setForm] = useState({
-    current_password: "",
-    password: "",
-    password_confirmation: "",
-  })
+    const { changePassword } = useStateContext()
 
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
-
-  const submit = async (e: any) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage("")
-
-    try {
-      const msg = await changePassword(form)
-      setMessage(msg + " ✅")
-      setForm({
+    const [form, setForm] = useState({
         current_password: "",
         password: "",
         password_confirmation: "",
-      })
-    } catch (err: any) {
-      setMessage(
-        err.response?.data?.message ||
-        err.response?.data?.errors?.current_password?.[0] ||
-        "Failed to change password"
-      )
-    } finally {
-      setLoading(false)
-    }
-  }
+    })
 
-  return (
-    <form onSubmit={submit}>
-      <h2>Change Password</h2>
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
-      {message && <p>{message}</p>}
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
 
-      <input
-        type="password"
-        placeholder="Current Password"
-        value={form.current_password}
-        onChange={e => setForm({ ...form, current_password: e.target.value })}
-        required
-      />
+        setLoading(true)
+        setError(null)
 
-      <input
-        type="password"
-        placeholder="New Password"
-        value={form.password}
-        onChange={e => setForm({ ...form, password: e.target.value })}
-        required
-      />
-
-      <input
-        type="password"
-        placeholder="Confirm New Password"
-        value={form.password_confirmation}
-        onChange={e =>
-          setForm({ ...form, password_confirmation: e.target.value })
+        if (form.password !== form.password_confirmation) {
+            setError(`Passwords do not match`)
+            setLoading(false)
+            return
         }
-        required
-      />
 
-      <button disabled={loading}>
-        {loading ? "Updating..." : "Change Password"}
-      </button>
-    </form>
-  )
+        try {
+            await changePassword(form)
+            alert(`Password changed successfully!`)
+            setForm({
+                current_password: "",
+                password: "",
+                password_confirmation: "",
+            })
+        } 
+        catch (err: any) {
+            setError(err.response?.data?.message || "Password change failed")
+        } 
+        setLoading(false)
+    }
+
+    return (
+        <Main>
+            <Section Title={`Change Password`} ID={`change-password`}>
+                <form onSubmit={handleSubmit}>
+                    {error && <p>{error}</p>}
+
+                    <Inputbox Type={`password`} Title={`Current Password`} Name={`Current Password`} Value={form.current_password} OnChange={e => setForm({...form, current_password: e.target.value})} Required />
+                    <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={e => setForm({...form, password: e.target.value})} Required />
+                    <Inputbox Type={`password`} Title={`Confirm Password`} Name={`Confirm Password`} Value={form.password_confirmation} OnChange={e => setForm({...form, password_confirmation: e.target.value})} Required />
+
+                    <Button Submit Disabled={loading} Title={loading ? `Submitting...` : `Submit`} />
+                </form>
+            </Section>
+        </Main>
+    )
 }

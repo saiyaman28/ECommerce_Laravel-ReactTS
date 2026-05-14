@@ -17,18 +17,27 @@ export default function Header({}) {
                     user?.role === "customer" ?
                         <nav id={`header-nav`}>
                             <Href Title={`HOME`} Redirect={`/`} />
+                            <Href Title={`EDIT PROFILE`} Redirect={`/edit-profile`} />
+                            <Href Title={`CHANGE PASSWORD`} Redirect={`/change-password`} />
                             <Href Title={`LOGOUT`} OnClick={logout} />
                         </nav>
                         :
                     user?.role === "admin" ?
                         <nav id={`header-nav`}>
                             <Href Title={`HOME`} Redirect={`/`} />
+                            <Href Title={`ORDERS`} Redirect={`admin/orders`} />
+                            <Href Title={`CATEGORIES`} Redirect={`admin/category`} />
+                            <Href Title={`PRODUCTS`} Redirect={`admin/product`} />
+                            <Href Title={`VARIANTS`} Redirect={`admin/product/variant`} />
+                            <Href Title={`EDIT PROFILE`} Redirect={`admin/edit-profile`} />
+                            <Href Title={`CHANGE PASSWORD`} Redirect={`admin/change-password`} />
                             <Href Title={`LOGOUT`} OnClick={logout} />
                         </nav>
                         :
                         <nav id={`header-nav`}>
-                            <Href Title={`HOME`} Redirect={`/`} />
-                            <Href Title={`LOGIN`} Redirect={`/login`} />
+                            <Href Title={`LOGIN`} Redirect={`/`} />
+                            <Href Title={`REGISTER`} Redirect={`/register`} />
+                            <Href Title={`FORGOT PASSWORD`} Redirect={`/forgot-password`} />
                         </nav>
                     :
                     <div className={`burger`}>

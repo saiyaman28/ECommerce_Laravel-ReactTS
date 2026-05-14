@@ -12,23 +12,12 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return response()->json(
-            Order::with('items.variant')->latest()->get()
-        );
-    }
-
-    public function show(Order $order)
-    {
-        return response()->json(
-            $order->load('items.variant')
-        );
+        return response()->json(Order::with('items.variant', 'customer')->latest()->get());
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_name' => 'required|string',
-            'customer_email' => 'nullable|email',
             'items' => 'required|array',
             'items.*.product_variant_id' => 'required|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1'
@@ -42,10 +31,9 @@ class OrderController extends Controller
         }
 
         $order = Order::create([
-            'customer_name' => $validated['customer_name'],
-            'customer_email' => $validated['customer_email'] ?? null,
+            'customer_id' => $request->user()->id, // ✅ THIS IS THE KEY CHANGE
             'total_price' => $total,
-            'status' => 'pending', // ✅ IMPORTANT
+            'status' => 'Pending',
         ]);
 
         foreach ($validated['items'] as $item) {
@@ -60,13 +48,20 @@ class OrderController extends Controller
             $variant->decrement('stock', $item['quantity']);
         }
 
-        return response()->json($order->load('items.variant'), 201);
+        return response()->json($order->load('items.variant', 'customer'), 201);
+    }
+
+    public function show(Order $order)
+    {
+        return response()->json(
+            $order->load('items.variant')
+        );
     }
 
     public function update(Request $request, Order $order)
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered'
+            'status' => 'required|in:Pending,Processing,Shipped,Delivered,Canceled'
         ]);
 
         $order->update($validated);

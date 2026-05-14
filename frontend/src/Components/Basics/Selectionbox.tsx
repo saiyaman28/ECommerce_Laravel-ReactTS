@@ -8,19 +8,21 @@ type SelectboxProps = {
     Options?: Array<{ Title: string, ID?: string, Value: string | number }>
     Value?: string | number
     Name?: string
+    OnChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void
     Multiple?: boolean
     AutoFocus?: boolean
     Disabled?: boolean
     Required?: boolean
 }
 
-export default function Selectionbox({ ID, Class, Title, Options, Value, Name, Multiple, AutoFocus, Disabled, Required }: SelectboxProps) {
+export default function Selectionbox({ ID, Class, Title, Options, Value, Name, OnChange, Multiple, AutoFocus, Disabled, Required }: SelectboxProps) {
     return (
         <select 
             id={ID} 
             className={Class} 
             value={Value}
             name={Name}
+            onChange={OnChange}
             multiple={Multiple}
             autoFocus={AutoFocus}
             disabled={Disabled}

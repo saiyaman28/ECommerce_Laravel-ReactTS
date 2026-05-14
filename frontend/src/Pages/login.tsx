@@ -1,68 +1,53 @@
-import { useState } from "react"
-import { useStateContext } from "../Context_Provider";
+import { React, useState } from 'react'
+import { useStateContext } from '../context_provider'
+import '../Assets/CSS/Pages/Login.sass'
+import { Main, Section, Group, Href, Inputbox, Button } from '../Exporter/Components_Exporter'
+import { AddPageTitle, AddClassBody, UseScreenWidth } from '../Exporter/Hooks_Exporter'
 
-export default function Login() {
-  const { login } = useStateContext()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+export default function LoginPage() {
+    const { login } = useStateContext()
+    
+    AddPageTitle(`Login`)
+    AddClassBody(`Login-Page`)
+    const screenwidth = UseScreenWidth()
+    
+    const [form, setForm] = useState({
+        email: ``,
+        password: ``,
+    })
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
 
-const submit = async (e: any) => {
-  e.preventDefault()
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
 
-  console.log("LOGIN PAYLOAD:", {
-    email,
-    password,
-  })
+        setLoading(true)
 
-  try {
-    await login({ email, password })
-  } catch (err: any) {
-    console.error("LOGIN ERROR:", err.response?.data || err)
-  }
+        try {
+            await login(form)
+        } 
+        catch (err: any) {
+            setError(err.response?.data?.message || `An error occurred while logging in.`)
+        }
+        setLoading(false)
+    }
+
+    return (
+        <Main>
+            <Section Title={`Login`} ID={`login`}>
+                <form onSubmit={handleSubmit}>
+                    {error && <p>{error}</p>}
+
+                    <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={form.email} OnChange={(e) => setForm({...form, email: e.target.value})} Required />
+                    <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={(e) => setForm({...form, password: e.target.value})} Required />
+
+                    <Button Submit Disabled={loading} Title={loading ? `Logging in...` : `Submit`} />
+                    <Button Redirect={`/register`} Title={`Register`} />
+                    <Button Redirect={`/forgot-password`} Title={`Forgot Password`} />
+                </form>
+            </Section>
+        </Main>
+    )
 }
-
-  return (
-    <form onSubmit={submit}>
-      <input onChange={e => setEmail(e.target.value)} />
-      <input type="password" onChange={e => setPassword(e.target.value)} />
-      <button>Login</button>
-    </form>
-  )
-}
-
-const styles: any = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#f4f6f8",
-  },
-  card: {
-    width: 350,
-    padding: 24,
-    background: "#fff",
-    borderRadius: 8,
-    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-  },
-  input: {
-    width: "100%",
-    padding: 10,
-    marginBottom: 12,
-  },
-  button: {
-    width: "100%",
-    padding: 10,
-    background: "#2563eb",
-    color: "#fff",
-    border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
-  },
-  error: {
-    color: "red",
-    marginBottom: 10,
-  },
-};
 
 
