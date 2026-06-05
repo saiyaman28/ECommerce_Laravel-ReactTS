@@ -15,55 +15,29 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    
-    public function register(Request $request)
+    public function index()
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'contact' => 'required|string|min:6|max:20|unique:users,contact',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'contact' => $request->contact,
-            'email' => $request->email,
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ], 201);
+        return User::all();
     }
-
+    
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
             'password' => 'required',
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
+            return response()->json(401);
         }
-
+        
         $user = Auth::user();
 
         $user->tokens()->delete();
 
-        $token = $user->createToken('access_token')->plainTextToken;
-
         return response()->json([
             'user' => $user,
-            'token' => $token,
+            'token' => $user->createToken('access_token')->plainTextToken,
         ]);
     }
 
@@ -71,7 +45,26 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out']);
+        return response()->json();
+    }
+    
+    public function register(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'contact' => 'required|string|min:6|max:20|unique:users,contact',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        return User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
     }
 
     public function forgotPassword(Request $request)
@@ -80,17 +73,11 @@ class AuthController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
-            ? response()->json([
-                'message' => __($status)
-            ])
-            : response()->json([
-                'message' => __($status)
-            ], 400);
+            ? response()->json()
+            : response()->json(400);
     }
 
     public function resetPassword(Request $request)
@@ -101,83 +88,54 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+        $status = Password::reset($request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
-                $user->forceFill([
+                $user->update([
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
-                ])->save();
-
+                ]);
                 event(new PasswordReset($user));
             }
         );
 
         return $status === Password::PASSWORD_RESET
-            ? response()->json(['message' => 'Password reset successful'])
-            : response()->json(['message' => __($status)], 422);
+            ? response()->json()
+            : response()->json(422);
     }
 
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
+        $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'contact' => [
-                'required',
-                'string',
-                'min:6',
-                'max:20',
-                Rule::unique('users')->ignore($user->id),
-            ],
+            'email' => ['required','email',Rule::unique('users')->ignore($user->id)],
+            'contact' => ['required','string','min:6','max:20',Rule::unique('users')->ignore($user->id)],
         ]);
 
-        $user->update($validated);
+        $user->update($request->only(['first_name','last_name','email','contact']));
 
-        return response()->json([
-            'message' => 'Profile updated successfully',
-            'user' => $user
-        ]);
+        return response()->json(['user' => $user->refresh()]);
     }
 
     public function changePassword(Request $request)
     {
+        $user = Auth::user();
+
         $request->validate([
             'current_password' => 'required',
             'password' => 'required|min:8|confirmed',
         ]);
 
-        $user = $request->user();
-
-        // ❌ Wrong current password
         if (!Hash::check($request->current_password, $user->password)) {
-            throw ValidationException::withMessages([
-                'current_password' => ['Current password is incorrect.'],
-            ]);
+            return response()->json(422);
         }
 
-        // ✅ Update password
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
+        $user->update(['password' => Hash::make($request->password),]);
 
-        // 🔐 OPTIONAL: log out other devices
-        $user->tokens()->delete();
-        $token = $user->createToken('access_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Password changed successfully',
-            'token' => $token,
-        ]);
+        return response()->json(['user' => $user->refresh()]);
     }
-
 
     public function me(Request $request)
     {

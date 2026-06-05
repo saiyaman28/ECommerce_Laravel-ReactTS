@@ -4,77 +4,64 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\ProductVariant; 
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        return response()->json(Order::with('items.variant', 'customer')->latest()->get());
+        return response()->json(Order::with('items.variant', 'customer')->get());
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
+            'customer_id' => 'required|exists:users,id',
             'items' => 'required|array',
             'items.*.product_variant_id' => 'required|exists:product_variants,id',
-            'items.*.quantity' => 'required|integer|min:1'
+            'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $total = 0;
-
-        foreach ($validated['items'] as $item) {
-            $variant = ProductVariant::findOrFail($item['product_variant_id']);
-            $total += $variant->price * $item['quantity'];
-        }
-
         $order = Order::create([
-            'customer_id' => $request->user()->id, // ✅ THIS IS THE KEY CHANGE
-            'total_price' => $total,
+            'customer_id' => $request->user()->id,
+            'total_price' => collect($request->items)->sum(
+                fn ($item) => ProductVariant::findOrFail($item['product_variant_id'])->price * $item['quantity']),
             'status' => 'Pending',
         ]);
 
-        foreach ($validated['items'] as $item) {
+        foreach ($request->items as $item) {
             $variant = ProductVariant::findOrFail($item['product_variant_id']);
-
             $order->items()->create([
                 'product_variant_id' => $variant->id,
                 'quantity' => $item['quantity'],
-                'total_price' => $variant->price * $item['quantity']
+                'total_price' => $variant->price * $item['quantity'],
             ]);
-
             $variant->decrement('stock', $item['quantity']);
         }
 
-        return response()->json($order->load('items.variant', 'customer'), 201);
+        return response()->json($order->load('items.variant', 'customer'));
     }
 
-    public function show(Order $order)
+    public function show($id)
     {
-        return response()->json(
-            $order->load('items.variant')
-        );
+        return response()->json(Order::with('items.variant')->findOrFail($id));
     }
 
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $request->validate([
             'status' => 'required|in:Pending,Processing,Shipped,Delivered,Canceled'
         ]);
 
-        $order->update($validated);
-
-        return response()->json($order->load('items.variant'));
+        return response()->json(tap(Order::findOrFail($id))->update([
+            'status' => $request->status
+        ])->load('items.variant'));
     }
 
-    public function destroy(Order $order)
+    public function destroy($id)
     {
-        $order->delete();
-
-        return response()->json([
-            'message' => 'Order deleted'
-        ]);
+        return response()->json(Order::destroy($id));
     }
 }

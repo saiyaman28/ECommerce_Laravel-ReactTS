@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\OrderItem;
 
 class OrderItemController extends Controller
@@ -13,8 +13,25 @@ class OrderItemController extends Controller
         return response()->json(OrderItem::all());
     }
 
-    public function show(OrderItem $order_item)
+    public function store()
     {
-        return response()->json($order_item);
+        // 
+    }
+
+    public function show($id)
+    {
+        return response()->json(OrderItem::where('id', $id)->first());
+    }
+
+    
+    public function update()
+    {
+        // 
+    }
+
+    
+    public function destroy()
+    {
+        // 
     }
 }

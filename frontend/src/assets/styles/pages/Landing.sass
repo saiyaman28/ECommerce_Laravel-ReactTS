@@ -1,0 +1,79 @@
+Body.Landing-Page 
+
+    main
+    
+        > #carouselbanner 
+            width: 100% !important
+        
+            > .carousel
+
+                .carousel-item 
+
+                    > img 
+                        object-fit: cover !important
+
+                > button 
+                    position: absolute !important
+                    top: 50% !important
+                    transform: translate(-50%, unset)
+                    background-color: transparent !important
+
+        > #featuredcars
+
+            > div.group 
+                display: grid !important
+                width: 100% !important
+                scroll-snap-type: x mandatory !important
+
+                > a
+                    width: 100% !important
+                    text-decoration: unset !important
+        
+
+@media only screen and (min-width: 1267px) 
+
+    Body.Landing-Page 
+
+        main 
+        
+            > #carouselbanner 
+            
+                .carousel-item 
+
+                    > img 
+                        height: 600px !important
+
+            > #featuredcars
+                
+                > div.group 
+                    grid-template-columns: repeat(auto-fill, minmax(274.5px, 1fr)) !important
+
+@media only screen and (min-width: 767px) and (max-width: 1266px) 
+
+    Body.Landing-Page 
+
+        main 
+        
+            > #carouselbanner 
+            
+                .carousel-item 
+
+                    > img 
+                        height: 400px !important
+
+            > #featuredcars
+                
+                > div.group 
+                    grid-template-columns: repeat(auto-fill, minmax(274.5px, 1fr)) !important
+
+
+@media only screen and (max-width: 766px) 
+
+    Body.Landing-Page 
+
+        main 
+
+            > #featuredcars
+                
+                > div.group 
+                    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)) !important

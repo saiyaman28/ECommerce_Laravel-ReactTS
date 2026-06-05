@@ -13,62 +13,58 @@ class ProductVariantController extends Controller
         return response()->json(ProductVariant::with('product.category')->get());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'sku' => 'nullable|string|unique:product_variants,sku',
-            'variant_name' => 'required|string',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-        ]);
-
-        $variant = ProductVariant::create([
-            'product_id' => $validated['product_id'],
-            'sku' => $request->sku ?? 'SKU-' . time(),
-            'variant_name' => $validated['variant_name'],
-            'price' => $validated['price'],
-            'stock' => $validated['stock'],
-        ]);
-
-        return response()->json(
-            $variant->load('product.category'),
-            201
-        );
-    }
-
-    public function show(string $id)
-    {
-        return ProductVariant::with('product.category')->findOrFail($id);
-    }
-
-    public function edit(ProductVariant $productVariant)
-    {
-        //
-    }
-
-    public function update(Request $request, ProductVariant $productVariant)
-    {
-        $validated = $request->validate([
+        $request->validate([
             'product_id' => 'required|exists:products,id',
             'variant_name' => 'required|string',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $productVariant->update($validated);
+        $request['sku'] = $request->sku ?? 'SKU-' . time();
 
-        return response()->json($productVariant->load('product.category'));
+        return response()->json(ProductVariant::create([
+            'product_id' => $request->product_id,
+            'sku' => $request->sku,
+            'variant_name' => $request->variant_name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'image' => $request->hasFile('image')
+                ? $request->file('image')->store('products', 'public')
+                : null,
+        ]));
     }
 
-    public function destroy(ProductVariant $productVariant)
+    public function show($id)
     {
-        $productVariant->delete();
-        return response()->json(['message' => 'Variant deleted']);
+        return response()->json(ProductVariant::with('product.category')->where('id', $id)->first());
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'variant_name' => 'required|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        return response()->json(ProductVariant::where('id', $id)->update([
+            'product_id' => $request->product_id, 
+            'variant_name' => $request->variant_name, 
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'image' => $request->hasFile('image')
+                ? $request->file('image')->store('products', 'public')
+                : Product::where('id', $id)->value('image'),
+        ]));
+    }
+
+    public function destroy($id)
+    {
+        return response()->json(ProductVariant::destroy($id));
     }
 }

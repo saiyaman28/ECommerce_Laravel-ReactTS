@@ -1,162 +1,219 @@
-import { createBrowserRouter } from 'react-router-dom'
-import GuestLayout from './Layout/Guest'
-import CustomerLayout from "./Layout/Customer"
-import AdminLayout from "./Layout/Admin"
+import {createBrowserRouter} from 'react-router-dom'
 
-import RegisterPage from './Pages/Register'
-import LoginPage from './Pages/Login'
-import ForgotPasswordPage from './Pages/Forgot_Password'
-import ResetPasswordPage from './Pages/Reset_Password'
-import EditProfilePage from './Pages/Edit_Profile'
-import ChangePasswordPage from './Pages/Change_Password'
+import GuestLayout from './layout/guest'
+import CustomerLayout from './layout/customer'
+import AdminLayout from './layout/admin'
 
-import DashboardPage from './Pages/dashboard'
+import OrderingPage from './pages/Ordering'
+import ProductPage from './pages/Product'
 
-import AdminDashboardPage from './Pages/AdminDashboard'
-import OrderPage from './Pages/Ordering'
-import CategoryList from './Pages/Admin/Category/Category_List'
-import CreateCategoryPage from './Pages/Admin/Category/Create_Category'
-import EditCategoryPage from './Pages/Admin/Category/Edit_Category'
-import DeleteCategoryPage from './Pages/Admin/Category/Delete_Category'
+import LoginPage from './pages/Login'
+import RegisterPage from './pages/Register'
+import ForgotPasswordPage from './pages/Forgot_Password'
+import ResetPasswordPage from './pages/Reset_Password'
 
-import ProductList from './Pages/Admin/Products/Product_List'
-import CreateProductPage from './Pages/Admin/Products/Create_Product'
-import EditProductPage from './Pages/Admin/Products/Edit_Product'
-import DeleteProductPage from './Pages/Admin/Products/Delete_Product'
+import CartPage from './pages/Cart'
+import OrdersListPage from './pages/Orders_List'
+import EditOrderPage from './pages/Edit_Order'
+import EditProfilePage from './pages/Edit_Profile'
+import ChangePasswordPage from './pages/Change_Password'
 
-import ProductVariantList from './Pages/Admin/Product_Variants/Variant_List'
-import CreateProductVariantPage from './Pages/Admin/Product_Variants/Create_Variant'
-import EditProductVariantPage from './Pages/Admin/Product_Variants/Edit_Variant'
-import DeleteProductVariantPage from './Pages/Admin/Product_Variants/Delete_Variant'
+import CategoriesListPage from './pages/Admin/Categories/Categories_List'
+import CreateCategoriesPage from './pages/Admin/Categories/Create_Categories'
+import EditCategoriesPage from './pages/Admin/Categories/Edit_Categories'
+import DeleteCategoriesPage from './pages/Admin/Categories/Delete_Categories'
 
-import OrderListPage from './Pages/Admin/Orders/Orders_List'
-import EditOrderPage from './Pages/Admin/Orders/Edit_Orders'
+import ProductsListPage from './pages/Admin/Products/Products_List'
+import CreateProductsPage from './pages/Admin/Products/Create_Products'
+import EditProductsPage from './pages/Admin/Products/Edit_Products'
+import DeleteProductsPage from './pages/Admin/Products/Delete_Products'
+
+import ProductVariantsListPage from './pages/Admin/Product_Variants/Variant_Lists'
+import CreateProductVariantsPage from './pages/Admin/Product_Variants/Create_Variants'
+import EditProductVariantsPage from './pages/Admin/Product_Variants/Edit_Variants'
+import DeleteProductVariantsPage from './pages/Admin/Product_Variants/Delete_Variants'
 
 export default createBrowserRouter([
 
     {
-        path: '',
+        path: ``,
         element: <GuestLayout/>,
         children: [
             {
-                path: '',
+                path: ``,
+                element: <OrderingPage/>
+            },
+            {
+                path: `product/:id`,
+                element: <ProductPage/>
+            },
+            {
+                path: `login`,
                 element: <LoginPage/>
             },
             {
-                path: 'register',
+                path: `register`,
                 element: <RegisterPage/>
             },
             {
-                path: 'forgot-password',
+                path: `forgot-password`,
                 element: <ForgotPasswordPage/>
             },
             {
-                path: 'reset-password',
+                path: `reset-password`,
                 element: <ResetPasswordPage/>
             },
         ]
     },
-
     {
-        path: "",
+        path: `customer`,
         element: <CustomerLayout />,
         children: [
             {
-                path: "dashboard",
-                element: <DashboardPage />
+                path: ``,
+                element: <OrderingPage/>
             },
             {
-                path: 'edit-profile',
+                path: `product/:id`,
+                element: <ProductPage/>
+            },
+            {
+                path: `cart`,
+                element: <CartPage />
+            },
+            {
+                path: `edit-profile`,
                 element: <EditProfilePage/>
             },
             {
-                path: 'change-password',
+                path: `change-password`,
                 element: <ChangePasswordPage/>
             },
             {
-                path: "ordering",
-                element: <OrderPage />
+                path: `list`,
+                children: [
+                    {
+                        path: `orders`,
+                        children: [
+                            {
+                                path: ``,
+                                element: <OrdersListPage />
+                            },
+                            {
+                                path: `:id/edit`,
+                                element: <EditOrderPage/>
+                            }
+                        ]
+                    },
+                ]
             },
         ]
     },
-
     {
-        path: "",
+        path: `admin`,
         element: <AdminLayout />,
         children: [
             {
-                path: "admin/dashboard",
-                element: <AdminDashboardPage />
+                path: ``,
+                element: <OrderingPage/>
             },
             {
-                path: 'admin/edit-profile',
-                element: <EditProfilePage/>
-            },            
+                path: `product/:id`,
+                element: <ProductPage/>
+            },
             {
-                path: 'admin/change-password',
+                path: `cart`,
+                element: <CartPage />
+            },
+            {
+                path: `edit-profile`,
+                element: <EditProfilePage/>
+            },
+            {
+                path: `change-password`,
                 element: <ChangePasswordPage/>
             },
             {
-                path: 'admin/category',
-                element: <CategoryList/>
-            },
-            {
-                path: 'admin/category/create',
-                element: <CreateCategoryPage/>
-            },
-            {
-                path: 'admin/category/edit/:id',
-                element: <EditCategoryPage/>
-            },
-            {
-                path: 'admin/category/delete/:id',
-                element: <DeleteCategoryPage/>
-            },
-            {
-                path: 'admin/product',
-                element: <ProductList/>
-            },
-            {
-                path: 'admin/product/create',
-                element: <CreateProductPage/>
-            },
-            {
-                path: 'admin/product/edit/:id',
-                element: <EditProductPage/>
-            },
-            {
-                path: 'admin/product/delete/:id',
-                element: <DeleteProductPage/>
-            },
-            {
-                path: 'admin/product/variant',
-                element: <ProductVariantList/>
-            },
-            {
-                path: 'admin/product/variant/create',
-                element: <CreateProductVariantPage/>
-            },
-            {
-                path: 'admin/product/variant/edit/:id',
-                element: <EditProductVariantPage/>
-            },
-            {
-                path: 'admin/product/variant/delete/:id',
-                element: <DeleteProductVariantPage/>
-            },
-            {
-                path: 'admin/orders',
-                element: <OrderListPage/>
-            },
-            {
-                path: "admin/ordering",
-                element: <OrderPage />
-            },
-            {
-                path: 'admin/orders/edit/:id',
-                element: <EditOrderPage/>
-            },
+                path: `list`,
+                children: [
+                    {
+                        path: `orders`,
+                        children: [
+                            {
+                                path: ``,
+                                element: <OrdersListPage />
+                            },
+                            {
+                                path: `:id/edit`,
+                                element: <EditOrderPage/>
+                            }
+                        ]
+                    },
+                    {
+                        path: `categories`,
+                        children: [
+                            {
+                                path: ``,
+                                element: <CategoriesListPage/>
+                            },
+                            {
+                                path: `create`,
+                                element: <CreateCategoriesPage/>
+                            },
+                            {
+                                path: `:id/edit`,
+                                element: <EditCategoriesPage/>
+                            },
+                            {
+                                path: `:id/delete`,
+                                element: <DeleteCategoriesPage/>
+                            },
+                        ]
+                    },
+                    {
+                        path: `products`,
+                        children: [
+                            {
+                                path: ``,
+                                element: <ProductsListPage/>
+                            },
+                            {
+                                path: `create`,
+                                element: <CreateProductsPage/>
+                            },
+                            {
+                                path: `:id/edit`,
+                                element: <EditProductsPage/>
+                            },
+                            {
+                                path: `:id/delete`,
+                                element: <DeleteProductsPage/>
+                            },
+                            {
+                                path: `variants`,
+                                children: [
+                                    {
+                                        path: ``,
+                                        element: <ProductVariantsListPage/>
+                                    },
+                                    {
+                                        path: `create`,
+                                        element: <CreateProductVariantsPage/>
+                                    },
+                                    {
+                                        path: `:id/edit`,
+                                        element: <EditProductVariantsPage/>
+                                    },
+                                    {
+                                        path: `:id/delete`,
+                                        element: <DeleteProductVariantsPage/>
+                                    },
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            }
         ]
     }
 ])
-

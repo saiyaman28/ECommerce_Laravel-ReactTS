@@ -1,0 +1,92 @@
+Body.ViewVehicle-Page
+
+    main
+
+        > #vehicle
+            margin-top: 33px !important
+
+            > h4
+                text-align: center !important
+                font-weight: 400 !important
+
+            
+
+@media only screen and (min-width: 1267px) 
+
+    Body.ViewVehicle-Page
+
+        main
+
+            > #vehicle
+
+                > div.group
+                    height: 600px !important
+
+                    > div
+                        width: 50% !important
+                        align-items: center !important
+                        justify-content: center !important
+                        
+                        > img#vehicle
+                            width: 600px !important
+                            height: auto !important
+
+                        > img#logo
+                            width: 400px !important
+                            height: auto !important
+
+                        > h1
+                            font-size: 33px !important
+
+@media only screen and (min-width: 767px) and (max-width: 1266px) 
+   
+    Body.ViewVehicle-Page
+
+        main
+
+            > #vehicle
+
+                > div.group
+                    margin-top: 15px !important
+                    align-items: center !important
+
+                    > div
+                        width: 50% !important
+
+                        &:has( > img#logo )
+                            align-items: center !important
+
+                        > img#logo
+                            width: 100% !important
+                            height: auto !important
+                        
+                        > img#vehicle
+                            width: 100% !important
+                            height: auto !important
+
+
+
+@media only screen and (max-width: 766px) 
+ 
+    Body.ViewVehicle-Page
+
+        main
+
+            > #vehicle
+
+                > div.group
+                    margin-top: 15px !important
+
+                    > div
+                        width: 100% !important
+
+                        &:has( > img#logo )
+                            align-items: center !important
+
+                        > img#logo
+                            width: 100% !important
+                            height: auto !important
+                        
+                        > img#vehicle
+                            width: 100% !important
+                            height: auto !important

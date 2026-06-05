@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        return Category::all();
+        return response()->json(Category::all());
     }
 
     public function store(Request $request)
@@ -19,31 +19,25 @@ class CategoryController extends Controller
             'category_name' => 'required|string|max:255'
         ]);
 
-        return Category::create($request->all());
+        return response()->json(Category::create($request->only('category_name')));
     }
 
-    public function show(string $id)
+    public function show($id)
     {
-        return Category::where('id', $id)->first();
+        return response()->json(Category::where('id', $id)->first());
     }
 
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'category_name' => 'required|string|max:255',
+            'category_name' => 'required|string|max:255'
         ]);
 
-        $category->update([
-            'category_name' => $request->category_name,
-        ]);
-
-        return response()->json($category);
+        return response()->json(Category::where('id', $id)->update($request->only('category_name')));
     }
 
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        $category->delete();
-
-        return response()->json();
+        return response()->json(Category::destroy($id));
     }
 }

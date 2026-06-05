@@ -1,0 +1,31 @@
+main div.box 
+    background-color: #FFF !important
+    width: 100% !important
+    justify-content: center !important
+    align-items: center !important
+    gap: 8px !important
+    padding: 13px !important
+    flex-direction: column !important
+
+    > .title 
+        width: 100% !important
+        min-height: 38px !important
+        white-space: nowrap !important
+
+        > h2 
+            align-items: center !important
+
+        > .left, > .right 
+            width: 100% !important
+            gap: 8px !important
+
+        > .right 
+            justify-content: flex-end !important
+
+    &.boxrow 
+        flex-direction: unset !important
+        align-items: center !important
+
+    &.boxwrap 
+        flex-wrap: wrap !important
+        align-items: center !important

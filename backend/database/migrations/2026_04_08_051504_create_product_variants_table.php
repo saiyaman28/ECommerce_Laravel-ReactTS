@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('variant_name');
             $table->decimal('price',10,2);
             $table->integer('stock')->default(0);
-            $table->timestamp('last_update')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
             });

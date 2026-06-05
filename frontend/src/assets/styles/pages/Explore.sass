@@ -1,0 +1,37 @@
+Body.Explore-Page
+
+    main
+
+        > #explore
+
+            > div.group 
+                display: grid !important
+                width: 100% !important
+                scroll-snap-type: x mandatory !important
+
+                > a
+                    width: 100% !important
+                    text-decoration: unset !important
+
+@media only screen and (min-width: 1267px) 
+
+    Body.Explore-Page
+
+        main
+
+            > #explore
+                
+                > div.group 
+                    grid-template-columns: repeat(auto-fill, minmax(274.5px, 1fr)) !important
+
+
+@media only screen and (max-width: 766px) 
+
+    Body.Explore-Page
+
+        main 
+
+            > #explore
+                
+                > div.group 
+                    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)) !important

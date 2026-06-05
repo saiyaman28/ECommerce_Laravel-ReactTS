@@ -1,12 +1,12 @@
-import { StrictMode } from 'react'
+import {StrictMode} from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
-import { ContextProvider } from "./context_provider";
+import {RouterProvider} from 'react-router-dom'
+import {ContextProvider} from './context_provider'
 import router from './router'
-import './Assets/CSS/Base.sass'
-import './Assets/Bootstrap/Bootstrap.css'
-import './Assets/Bootstrap/Bootstrap.js'
-import './Assets/Bootstrap/Popper.js'
+import './assets/styles/base.sass'
+import './assets/bootstrap/bootstrap.css'
+import './assets/bootstrap/bootstrap.js'
+import './assets/bootstrap/popper.js'
 
 const rootElement = document.getElementById('root')
 
