@@ -4,7 +4,7 @@ import {Main, Section, Group, Href, Inputbox, Button} from '../../../exporter/co
 import '../../../assets/styles/Pages/Category.sass'
 
 export default function ProductVariantsListPage() {
-    const {search, setSearch, page, setPage, totalPages, paginatedItems, pages} = useRetrieveProductVariants()
+    const {search, setSearch, page, setPage, totalPages, paginatedItems, getVisiblePages} = useRetrieveProductVariants()
 
     useAddPageTitle(`Product Variant`)
     useAddClassBody(`Create-Product-Page`)
@@ -28,11 +28,12 @@ export default function ProductVariantsListPage() {
                     ))}
                 </Group>
                 {Number(totalPages) > 1 &&
-                    <Group Row>
+                    <Group>
                         <Button Title={`Prev`} OnClick={() => setPage(Number(page) - 1)} Disabled={Number(page) === 1} />
-                            {pages.map((pageNumber) => (
-                                <Button key={pageNumber} Title={String(pageNumber)} OnClick={() => setPage(pageNumber)} Disabled={page === pageNumber} />
-                            ))}
+                        {getVisiblePages(Number(page), Number(totalPages)).map((p, idx) => p === `...`
+                            ? <span key={idx}>{p}</span>
+                            : <Button key={idx} Title={String(p)} OnClick={() => setPage(Number(p))} Disabled={Number(page) === Number(p)} />
+                        )}
                         <Button Title={`Next`} OnClick={() => setPage(Number(page) + 1)} Disabled={Number(page) === Number(totalPages)} />
                     </Group>
                 }

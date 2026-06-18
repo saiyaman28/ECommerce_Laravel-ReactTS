@@ -13,14 +13,12 @@ export default function ResetPasswordPage() {
     return (
         <Main>
             <Section Title={`Reset Password`} ID={`reset-password`}>
-                <form onSubmit={handleSubmit}>
-                    {error && <p>{error}</p>}
+                {error && <p>{error}</p>}
 
-                    <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={e => setForm({...form, password: e.target.value})} Required />
-                    <Inputbox Type={`password`} Title={`Confirm Password`} Name={`Confirm Password`} Value={form.password_confirmation} OnChange={e => setForm({...form, password_confirmation: e.target.value})} Required />
+                <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={e => setForm({...form, password: e.target.value})} Required />
+                <Inputbox Type={`password`} Title={`Confirm Password`} Name={`Confirm Password`} Value={form.password_confirmation} OnChange={e => setForm({...form, password_confirmation: e.target.value})} Required />
 
-                    <Button Submit Disabled={loading} Title={loading ? `Submitting...` : `Submit`} />
-                </form>
+                <Button Title={loading ? `Submitting...` : `Submit`} OnClick={handleSubmit} Disabled={loading} />
             </Section>
         </Main>
     )

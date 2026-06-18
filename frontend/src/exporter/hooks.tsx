@@ -25,7 +25,6 @@ export {default as useRetrieveProductVariants} from '../hooks/product_variants/u
 export {default as useUpdateProductVariants} from '../hooks/product_variants/useUpdateProductVariants'
 export {default as useDeleteProductVariants} from '../hooks/product_variants/useDeleteProductVariants'
 
-export {default as useCreateOrders} from '../hooks/orders/useCreateOrders'
 export {default as useRetrieveOrders} from '../hooks/orders/useRetrieveOrders'
 export {default as useUpdateOrders} from '../hooks/orders/useUpdateOrders'
 export {default as useEnlistProducts} from '../hooks/orders/useEnlistProducts'

@@ -10,7 +10,7 @@ type MainProps = {
 
 export default function Main({ children, ID, Class, Row }: MainProps) {
     return(
-        <main id={ID} className={`${Class} ${Row && "row"}`}>
+        <main id={ID} className={`${Class} ${Row && `row`}`}>
             {children}
         </main>
     )

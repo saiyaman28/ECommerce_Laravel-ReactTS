@@ -13,13 +13,11 @@ export default function DeleteCategoriesPage() {
     return (
         <Main>
             <Section Title={`Delete Category`} ID={`create-category`}>
-                <form onSubmit={handleSubmit}>
-                    {error && <p>{error}</p>}
+                {error && <p>{error}</p>}
 
-                    <Inputbox Disabled Type={`text`} Title={`Category`} Name={`Category`} Value={categoryName.category_name} />
+                <Inputbox Disabled Title={`Category`} Name={`Category`} Value={categoryName} />
 
-                    <Button Submit Disabled={loading} Title={loading ? `Submitting...` : `Submit`} />
-                </form>
+                <Button Title={loading ? `Submitting...` : `Submit`} OnClick={handleSubmit} Disabled={loading} />
             </Section>
         </Main>
     )

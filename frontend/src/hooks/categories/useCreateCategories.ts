@@ -4,7 +4,7 @@ import {type Categories} from '../../exporter/data'
 import {createCategories} from '../../exporter/api'
 
 export default function useCreateCategory() {
-    const [categoryName, setCategoryName] = useState<Pick<Categories, `category_name`>>({category_name: ``})
+    const [categoryName, setCategoryName] = useState<Categories[`category_name`]>(``)
 
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false)

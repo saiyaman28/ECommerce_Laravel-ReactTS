@@ -54,6 +54,16 @@ export default function useRetrieveCategories() {
     const paginatedItems = filteredItems.slice((Number(page) - 1) * perPage, Number(page) * perPage)
     const pages = Array.from({length: totalPages}, (_, i) => i + 1)
 
+    const getVisiblePages = (page: number, totalPages: number): (number | string)[] => {
+        if (totalPages <= 6) return Array.from({ length: totalPages }, (_, i) => i + 1)
+        
+        if (page <= 4) return [1, 2, 3, 4, 5, "...", totalPages]
+
+        if (page >= totalPages - 3) return [1, "...", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+        
+        return [1, "...", page - 1, page, page + 1, "...", totalPages]
+    }
+
     return {
         variants,
         setVariants,
@@ -66,6 +76,7 @@ export default function useRetrieveCategories() {
         perPage,
         totalPages,
         paginatedItems,
-        pages
+        pages,
+        getVisiblePages
     }
 }

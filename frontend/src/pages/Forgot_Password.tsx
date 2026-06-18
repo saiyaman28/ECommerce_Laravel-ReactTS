@@ -13,13 +13,11 @@ export default function ForgotPasswordPage() {
     return (
         <Main>
             <Section Title={`Forgot Password`} ID={`forgot-password`}>
-                <form onSubmit={handleSubmit}>
-                    {error && <p>{error}</p>}
+                {error && <p>{error}</p>}
 
-                    <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={email.email} OnChange={(e) => setEmail({email: e.target.value})} Required />
+                <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={email.email} OnChange={(e) => setEmail({email: e.target.value})} Required />
                   
-                    <Button Submit Disabled={loading} Title={loading ? `Submitting...` : `Submit`} />
-                </form>
+                <Button Title={loading ? `Submitting...` : `Submit`} OnClick={handleSubmit} Disabled={loading} />
             </Section>
         </Main>
     )

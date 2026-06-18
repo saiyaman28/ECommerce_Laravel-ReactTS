@@ -11,3 +11,4 @@ export {default as Button} from '../components/basics/Button'
 export {default as Href} from '../components/basics/Href'
 
 export {default as Card} from '../components/intermediate/Card'
+export {default as QRCode} from '../components/intermediate/QRCode'

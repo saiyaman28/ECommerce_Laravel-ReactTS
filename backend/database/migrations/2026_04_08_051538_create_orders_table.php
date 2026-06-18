@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('users')->cascadeOnDelete();;
             $table->decimal('total_price', 10, 2)->default(0);
+            $table->string('payment_reference_number')->nullable();
             $table->enum('status', ['Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled'])->default('Pending');
             $table->timestamps();
         });

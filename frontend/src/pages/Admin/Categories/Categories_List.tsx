@@ -1,10 +1,10 @@
 // import {React} from 'react'
-import {useAddPageTitle, useAddClassBody, useScreenWidth, useRetrieveCategories} from '../../../exporter/hooks'
-import {Main, Section, Group, Href, Inputbox, Button} from '../../../exporter/components'
+import { useAddPageTitle, useAddClassBody, useScreenWidth, useRetrieveCategories } from '../../../exporter/hooks'
+import { Main, Section, Group, Href, Inputbox, Button } from '../../../exporter/components'
 import '../../../assets/styles/Pages/Create_Product.sass'
 
 export default function CategoriesListPage() {
-    const {search, setSearch, page, setPage, totalPages, paginatedItems, pages} = useRetrieveCategories()
+    const {search, setSearch, page, setPage, totalPages, paginatedItems, getVisiblePages} = useRetrieveCategories()
 
     useAddPageTitle(`Category`)
     useAddClassBody(`Create-Product-Page`)
@@ -14,7 +14,7 @@ export default function CategoriesListPage() {
         <Main>
             <Section Title={`CATEGORIES`} ID={`list-product`}>
                 <Group>
-                    <Inputbox Title={`Search product or variant`} Name={`Search`} Value={String(search)} OnChange={(e) => {setSearch(e.target.value); setPage(1)}} />
+                    <Inputbox Title={`Search product or variant`} Name={`Search`} Value={String(search)} OnChange={(e) => { setSearch(e.target.value); setPage(1) }} />
                 </Group>
                 <Group>
                     <Button Title={`ADD CATEGORY`} Redirect={`/admin/list/categories/create`} />
@@ -27,11 +27,12 @@ export default function CategoriesListPage() {
                     ))}
                 </Group>
                 {Number(totalPages) > 1 &&
-                    <Group Row>
+                    <Group>
                         <Button Title={`Prev`} OnClick={() => setPage(Number(page) - 1)} Disabled={Number(page) === 1} />
-                            {pages.map((pageNumber) => (
-                                <Button key={pageNumber} Title={String(pageNumber)} OnClick={() => setPage(pageNumber)} Disabled={page === pageNumber} />
-                            ))}
+                        {getVisiblePages(Number(page), Number(totalPages)).map((p, idx) => p === `...`
+                            ? <span key={idx}>{p}</span>
+                            : <Button key={idx} Title={String(p)} OnClick={() => setPage(Number(p))} Disabled={Number(page) === Number(p)} />
+                        )}
                         <Button Title={`Next`} OnClick={() => setPage(Number(page) + 1)} Disabled={Number(page) === Number(totalPages)} />
                     </Group>
                 }

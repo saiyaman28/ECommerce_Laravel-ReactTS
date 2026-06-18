@@ -4,7 +4,7 @@ import {type Categories} from '../../exporter/data'
 import {fetchCategories, deleteCategories} from '../../exporter/api'
 
 export default function useDeleteCategory() {
-    const [categoryName, setCategoryName] = useState<Pick<Categories, `category_name`>>({category_name: ``})
+    const [categoryName, setCategoryName] = useState<Categories[`category_name`]>(``)
 
     const {id} = useParams()
 
@@ -17,7 +17,7 @@ export default function useDeleteCategory() {
         if (!id) return
         const load = async () => {
             const res = await fetchCategories(id)
-            setCategoryName({category_name: res.data.category_name,})
+            setCategoryName(res.data.category_name)
         }
         load()
     }, [id])
@@ -28,7 +28,7 @@ export default function useDeleteCategory() {
         setLoading(true)
         setError(null)
 
-        if (!id) return;
+        if (!id) return
 
         try {
             await deleteCategories(id)

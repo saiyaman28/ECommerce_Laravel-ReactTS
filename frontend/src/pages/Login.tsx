@@ -13,16 +13,15 @@ export default function LoginPage() {
     return (
         <Main>
             <Section Title={`Login`} ID={`login`}>
-                <form onSubmit={handleSubmit}>
-                    {error && <p>{error}</p>}
+                {error && <p>{error}</p>}
 
-                    <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={form.email} OnChange={(e) => setForm({...form, email: e.target.value})} Required />
-                    <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={(e) => setForm({...form, password: e.target.value})} Required />
+                <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={form.email} OnChange={(e) => setForm({ ...form, email: e.target.value })} Required />
+                <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={(e) => setForm({ ...form, password: e.target.value })} Required />
+                
+                <Button Title={loading ? `Submitting...` : `Submit`} OnClick={handleSubmit} Disabled={loading} />
 
-                    <Button Submit Title={loading ? `Submitting...` : `Submit`} Disabled={loading} />
-                    <Button Redirect={`/register`} Title={`Register`} />
-                    <Button Redirect={`/forgot-password`} Title={`Forgot Password`} />
-                </form>
+                <Button Redirect={`/register`} Title={`Register`} />
+                <Button Redirect={`/forgot-password`} Title={`Forgot Password`} />
             </Section>
         </Main>
     )

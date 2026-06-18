@@ -4,7 +4,7 @@ import {type Categories} from '../../exporter/data'
 import {fetchCategories, updateCategories} from '../../exporter/api'
 
 export default function useUpdateCategory() {
-    const [categoryName, setCategoryName] = useState<Pick<Categories, `category_name`>>({category_name: ``})
+    const [categoryName, setCategoryName] = useState<Categories[`category_name`]>(``)
 
     const {id} = useParams()
 
@@ -17,7 +17,7 @@ export default function useUpdateCategory() {
         if (!id) return
         const load = async () => {
             const res = await fetchCategories(id)
-            setCategoryName({category_name: res.data.category_name,})
+            setCategoryName(res.data.category_name)
         }
         load()
     }, [id])
@@ -31,7 +31,7 @@ export default function useUpdateCategory() {
         if (!id) return
 
         try {
-            await updateCategories(id, {category_name: categoryName.category_name})
+            await updateCategories(id, categoryName)
             alert(`Category updated`)
             navigate(`/admin/list/categories`)
         }

@@ -3,7 +3,7 @@ import {type Users} from '../../exporter/data'
 import {forgotpassUsers} from '../../exporter/api'
 
 export default function useForgotPass() {
-    const [email, setEmail] = useState<Pick<Users, `email`>>({email: ``})
+    const [email, setEmail] = useState<Users[`email`]>(``)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
 

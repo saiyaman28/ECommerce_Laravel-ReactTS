@@ -6,6 +6,7 @@ import AdminLayout from './layout/admin'
 
 import OrderingPage from './pages/Ordering'
 import ProductPage from './pages/Product'
+import SearchPage from './pages/Search'
 
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
@@ -33,6 +34,8 @@ import CreateProductVariantsPage from './pages/Admin/Product_Variants/Create_Var
 import EditProductVariantsPage from './pages/Admin/Product_Variants/Edit_Variants'
 import DeleteProductVariantsPage from './pages/Admin/Product_Variants/Delete_Variants'
 
+// import SamplePage from './pages/Dashboard'
+
 export default createBrowserRouter([
 
     {
@@ -46,6 +49,10 @@ export default createBrowserRouter([
             {
                 path: `product/:id`,
                 element: <ProductPage/>
+            },
+            {
+                path: `search`,
+                element: <SearchPage/>
             },
             {
                 path: `login`,
@@ -76,6 +83,10 @@ export default createBrowserRouter([
             {
                 path: `product/:id`,
                 element: <ProductPage/>
+            },
+            {
+                path: `search`,
+                element: <SearchPage/>
             },
             {
                 path: `cart`,
@@ -116,6 +127,10 @@ export default createBrowserRouter([
             {
                 path: ``,
                 element: <OrderingPage/>
+            },
+            {
+                path: `search`,
+                element: <SearchPage/>
             },
             {
                 path: `product/:id`,

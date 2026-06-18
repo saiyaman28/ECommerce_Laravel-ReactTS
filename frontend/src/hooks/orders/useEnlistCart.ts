@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
+import Tesseract from 'tesseract.js'
 import {useStateContext} from '../../context_provider'
-import {type Products, type ProductVariants, type OrderItems} from '../../exporter/data'
+import {type Products, type ProductVariants, type Orders, type OrderItems} from '../../exporter/data'
 import {retrieveProducts, retrieveProductVariants, createOrders} from '../../exporter/api'
 
 export default function useEnlistCart() {
@@ -8,7 +9,9 @@ export default function useEnlistCart() {
 
     const [products, setProducts] = useState<Pick<Products, `id` | `product_name`>[]>([])
     const [variants, setVariants] = useState<Pick<ProductVariants, `id` | `product_id` | `variant_name` | `stock` | `price`>[]>([])
-    const [cart, setCart] = useState<Pick<OrderItems, `product_variant_id` | `quantity`>[]>([])
+
+    const [cart, setCart] = useState<Pick<OrderItems, `id` | `product_variant_id` | `quantity`>[]>([])
+    const [paymentReference, setPaymentReference] = useState<Orders[`payment_reference_number`]>(``)
 
     useEffect(() => {
         const load = async () => {
@@ -25,6 +28,20 @@ export default function useEnlistCart() {
         }
         load()
     }, [])
+
+    const filteredItems = cart.map((c) => {
+        const variant = variants.find((v) => Number(v.id) === Number(c.product_variant_id))
+        if (!variant) return null
+        const product = products.find( (p) => Number(p.id) === Number(variant.product_id))
+
+        return {
+            ...c,
+            product_name: product?.product_name,
+            variant_name: variant?.variant_name,
+            price: variant?.price,
+            stock: variant?.stock
+        }
+    })
 
     const saveCart = (items: typeof cart) => {
         setCart(items)
@@ -47,9 +64,7 @@ export default function useEnlistCart() {
         if (qty < 1) qty = 1
         if (qty > stock) qty = stock
 
-        saveCart(cart.map((i) =>Number(i.product_variant_id) ===Number(id)
-            ? { ...i, quantity: qty } : i
-        ))
+        saveCart(cart.map((i) =>Number(i.product_variant_id) ===Number(id) ? { ...i, quantity: qty } : i))
     }
 
     const total = cart.reduce((sum, item) => {
@@ -57,6 +72,27 @@ export default function useEnlistCart() {
 
         return v ? sum + Number(v.price) * Number(item.quantity) : sum
     }, 0).toFixed(2)
+
+    const handleReceiptUpload = async (file: File) => {
+        try {
+            const {data: {text}} = await Tesseract.recognize(file, 'eng')
+            const normalized = text.replace(/\n/g, ` `).replace(/\s+/g, ` `).trim()
+            let refMatch = normalized.match(/Reference\s*(?:No\.?|Number)?[\s:\-]*([0-9]{8,})/i)
+
+            if (!refMatch) {
+                refMatch = normalized.match(/\b\d{8,}\b/)
+            }
+            if (refMatch) {
+                setPaymentReference(refMatch[1] || refMatch[0])
+            }
+            else {
+                alert(`Reference number not found`)
+            }
+        } 
+        catch (err) {
+            alert(`Failed to scan receipt`)
+        }
+    }
 
     const handleCheckout = async () => {
         if (!cart.length) return
@@ -75,6 +111,7 @@ export default function useEnlistCart() {
             await createOrders({
                 customer_id: Number(user?.id),
                 items: cleanItems,
+                payment_reference_number: paymentReference,
             })
             localStorage.removeItem(`cart`)
             setCart([])
@@ -93,11 +130,15 @@ export default function useEnlistCart() {
         setVariants,
         cart,
         setCart,
+        paymentReference, 
+        setPaymentReference,
         saveCart,
         getStock,
         removeItem,
         updateQty,
         total,
-        handleCheckout
+        handleCheckout,
+        handleReceiptUpload,
+        filteredItems
     }
 }

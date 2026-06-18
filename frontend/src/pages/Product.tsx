@@ -1,12 +1,12 @@
 // import {React} from 'react'
 import {useStateContext} from '../context_provider'
-import {useAddPageTitle, useAddClassBody, useScreenWidth, useViewProducts} from "../exporter/hooks"
-import {Main, Section, Group, Inputbox, Button} from "../exporter/components"
+import {useAddPageTitle, useAddClassBody, useScreenWidth, useViewProducts} from '../exporter/hooks'
+import {Main, Section, Group, Inputbox, Button} from '../exporter/components'
 import '../assets/styles/Pages/Create_Product.sass'
 
 export default function ProductPage() {    
     const {user} = useStateContext()
-    const {quantity, stocks, filteredItems, handleQuantity, addToCart} = useViewProducts()
+    const {quantity, stocks, filteredItems, handleQuantity, addToCart, similarItems} = useViewProducts()
 
     useAddPageTitle(filteredItems?.product_name && filteredItems?.variant_name
         ? `${filteredItems?.product_name} - ${filteredItems?.variant_name}`
@@ -43,6 +43,17 @@ export default function ProductPage() {
                     </Group>
                 }
             </Section>
+            {similarItems?.length > 0 &&
+                <Section Title={`SIMILAR PRODUCTS`} ID={`list-product`}>
+                    {similarItems.map((i) => (
+                        <Group Row key={i.id}>
+                            {i.image && <img src={`http://127.0.0.1:8000/storage/${i.image}`} width={`150`} />}
+                            {i.product_name} - {i.variant_name} - {i.category_name} - ₱{i.price} - Stock: {i.stock}
+                            <Button Title={`View`} Redirect={user?.role === `customer` ? `/customer/product/${i.id}` : user?.role === `admin` ? `/admin/product/${i.id}` : `/product/${i.id}`} />
+                        </Group>
+                    ))}
+                </Section>
+            }
         </Main>
     )
 }

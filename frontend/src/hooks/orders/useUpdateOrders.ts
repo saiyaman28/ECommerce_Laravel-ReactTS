@@ -1,12 +1,17 @@
 import {useState, useEffect} from 'react'
+import {useStateContext} from '../../context_provider'
+import Tesseract from 'tesseract.js'
 import {useNavigate, useParams} from 'react-router-dom'
 import {type Users, type Products, type ProductVariants, type Orders, type OrderItems} from '../../exporter/data'
 import {retrieveUsers, retrieveProducts, retrieveProductVariants, fetchOrders, retrieveOrderItems, updateOrders} from '../../exporter/api'
 
 export default function useUpdateOrders() {
-    const [form, setForm] = useState<Pick<Orders, `customer_id` | `total_price` | `status`>>({ 
+    const {user} = useStateContext()
+
+    const [form, setForm] = useState<Pick<Orders, `customer_id` | `total_price` | `payment_reference_number` | `status`>>({ 
         customer_id: 0,
-        total_price: ``,
+        total_price: 0,
+        payment_reference_number: ``,
         status: `Pending`,
     })
 
@@ -33,6 +38,7 @@ export default function useUpdateOrders() {
             setForm({            
                 customer_id: res.data.customer_id,
                 total_price: res.data.total_price,
+                payment_reference_number: res.data.payment_reference_number,
                 status: res.data.status,
             })
         }
@@ -59,19 +65,46 @@ export default function useUpdateOrders() {
         { Title: `Delivered`, Value: `Delivered` },
         { Title: `Canceled`, Value: `Canceled` },
     ]
+    
+    const handleReceiptUpload = async (file: File) => {
+        try {
+            const {data: {text} } = await Tesseract.recognize(file, 'eng')
+            const normalized = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim()
+            let refMatch = normalized.match(/Reference\s*(?:No\.?|Number)?[\s:\-]*([0-9]{8,})/i)
+
+            if (!refMatch) refMatch = normalized.match(/\b\d{8,}\b/)
+            
+            if (refMatch) {
+                setForm((prev) => ({
+                    ...prev,
+                    payment_reference_number: refMatch?.[1] || refMatch?.[0] || ''
+                }))
+            }
+            else alert("Reference number not found")
+            
+        }
+        catch (err) {
+            alert("Failed to scan receipt")
+        }
+    }
 
     const handleSubmit = async (e: any) => {
         e.preventDefault()
-
         setLoading(true)
         setError(null)
-
-        if (!id) return
-
+        if (!id) {
+            setLoading(false)
+            return
+        }
         try {
-            await updateOrders(id, {status: form.status})
+            await updateOrders(id, {
+                payment_reference_number: form.payment_reference_number,
+                status: form.status,
+            })
             alert(`Order updated`)
-            navigate(`/admin/list/orders`)
+            if (user?.role === `customer`) navigate(`/customer/list/orders`)
+            if (user?.role === `admin`) navigate(`/admin/list/orders`)
+            
         }
         catch (err: any) {
             console.log(err.response?.data?.message)
@@ -97,5 +130,6 @@ export default function useUpdateOrders() {
         filteredItems,
         filteredSelection,
         handleSubmit,
+        handleReceiptUpload
     }
 }

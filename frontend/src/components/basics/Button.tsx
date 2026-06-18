@@ -4,7 +4,7 @@ import '../../assets/styles/Components/Button.sass'
 
 type ButtonMode = {
     Redirect?: string
-    OnClick?: () => void
+    OnClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
     Navigate?: string
     Submit?: boolean
     Radio?: boolean

@@ -25,7 +25,7 @@ export default function useRetrieveOrders() {
         setPage(1)
     }, [search])
 
-    const enrichedVariables = (user?.role === "admin" ? orders : orders.filter(o => o.customer_id === user?.id)).map((o) => {
+    const enrichedVariables = (user?.role === `admin` ? orders : orders.filter(o => o.customer_id === user?.id)).map((o) => {
         const customer = buyer.find((b) => Number(b.id) === Number(o.customer_id))
 
         return {
@@ -40,7 +40,7 @@ export default function useRetrieveOrders() {
     })
 
     const filteredItems = enrichedVariables.filter((o) => {
-        const searchValue = search?.toLowerCase() ?? ""
+        const searchValue = search?.toLowerCase() ?? ``
 
         return (
             o?.id.toString().includes(searchValue) ||
@@ -60,6 +60,16 @@ export default function useRetrieveOrders() {
     const paginatedItems = filteredItems.slice((Number(page) - 1) * perPage, Number(page) * perPage)
     const pages = Array.from({length: totalPages}, (_, i) => i + 1)
 
+    const getVisiblePages = (page: number, totalPages: number): (number | string)[] => {
+        if (totalPages <= 6) return Array.from({ length: totalPages }, (_, i) => i + 1)
+        
+        if (page <= 4) return [1, 2, 3, 4, 5, `...`, totalPages]
+
+        if (page >= totalPages - 3) return [1, `...`, totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+        
+        return [1, `...`, page - 1, page, page + 1, `...`, totalPages]
+    }
+
     return {
         orders,
         setOrders,
@@ -72,6 +82,7 @@ export default function useRetrieveOrders() {
         perPage,
         totalPages,
         paginatedItems,
-        pages
+        pages,
+        getVisiblePages
     }
 }

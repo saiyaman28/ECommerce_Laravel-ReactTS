@@ -1,4 +1,4 @@
-import axiosClient from "../../axios"
+import axiosClient from '../../axios'
 
 export const fetchCategories = async (id: string) => {
     return axiosClient.get(`/categories/${id}`)

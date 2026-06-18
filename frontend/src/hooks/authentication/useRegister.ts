@@ -29,7 +29,7 @@ export default function useRegister() {
         try {
             await createUsers(form)
             alert(`Registation successful!`)
-            navigate(`/`)
+            navigate(`/login`)
         } 
         catch (err: any) {
             setError(`Validation error.`)

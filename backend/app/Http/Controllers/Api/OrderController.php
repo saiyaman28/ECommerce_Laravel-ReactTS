@@ -18,17 +18,18 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required|exists:users,id',
             'items' => 'required|array',
             'items.*.product_variant_id' => 'required|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1',
+            'payment_reference_number' => 'nullable|string|max:255',
         ]);
 
         $order = Order::create([
-            'customer_id' => $request->user()->id,
+            'customer_id' => auth()->id(),
             'total_price' => collect($request->items)->sum(
                 fn ($item) => ProductVariant::findOrFail($item['product_variant_id'])->price * $item['quantity']),
-            'status' => 'Pending',
+            'payment_reference_number' => $request->payment_reference_number,
+            'status' => 'Pending'
         ]);
 
         foreach ($request->items as $item) {
@@ -52,10 +53,12 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Pending,Processing,Shipped,Delivered,Canceled'
+            'payment_reference_number' => 'nullable|string|max:255',
+            'status' => 'required|in:Pending,Processing,Shipped,Delivered,Canceled',
         ]);
 
         return response()->json(tap(Order::findOrFail($id))->update([
+            'payment_reference_number' => $request->payment_reference_number,
             'status' => $request->status
         ])->load('items.variant'));
     }

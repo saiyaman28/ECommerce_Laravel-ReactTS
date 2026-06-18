@@ -6,7 +6,7 @@ import '../assets/styles/Pages/Create_Product.sass'
 
 export default function OrderingPage() {
     const {user} = useStateContext()
-    const {search, setSearch, page, setPage, totalPages, paginatedItems, pages} = useEnlistProducts()
+    const {page, setPage, totalPages, paginatedItems, getVisiblePages} = useEnlistProducts()
 
     useAddPageTitle(`Ordering`)
     useAddClassBody(`Create-Product-Page`)
@@ -16,9 +16,6 @@ export default function OrderingPage() {
         <Main>
             <Section Title={`ALL PRODUCTS`} ID={`list-product`}>
                 <Group>
-                    <Inputbox Title={`Search product or variant`} Name={`Search`} Value={search || ``} OnChange={(e) => setSearch(e.target.value)} />
-                </Group>
-                <Group>
                     {paginatedItems.map((v) => (
                         <Group Row key={v.id}>
                             {v.image && <img src={`http://127.0.0.1:8000/storage/${v.image}`} width={`150`} />}
@@ -27,13 +24,16 @@ export default function OrderingPage() {
                         </Group>
                     ))}
                 </Group>
-                <Group Row>
-                    <Button Title={`Prev`} OnClick={() => setPage(Number(page) - 1)} Disabled={Number(page) === 1} />
-                        {pages.map((pageNumber) => (
-                            <Button key={pageNumber} Title={String(pageNumber)} OnClick={() => setPage(pageNumber)} Disabled={page === pageNumber} />
-                        ))}
-                    <Button Title={`Next`} OnClick={() => setPage(Number(page) + 1)} Disabled={Number(page) === Number(totalPages)} />
-                </Group>
+                {Number(totalPages) > 1 &&
+                    <Group>
+                        <Button Title={`Prev`} OnClick={() => setPage(Number(page) - 1)} Disabled={Number(page) === 1} />
+                        {getVisiblePages(Number(page), Number(totalPages)).map((p, idx) => p === `...`
+                            ? <span key={idx}>{p}</span>
+                            : <Button key={idx} Title={String(p)} OnClick={() => setPage(Number(p))} Disabled={Number(page) === Number(p)} />
+                        )}
+                        <Button Title={`Next`} OnClick={() => setPage(Number(page) + 1)} Disabled={Number(page) === Number(totalPages)} />
+                    </Group>
+                }
             </Section>
         </Main>
     )

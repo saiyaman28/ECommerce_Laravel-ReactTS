@@ -13,18 +13,14 @@ export default function DeleteProductsPage() {
     return (
         <Main>
             <Section Title={`Delete Category`} ID={`create-product`}>
-                <form onSubmit={handleSubmit}>
-                    {error && <p>{error}</p>}
+                {error && <p>{error}</p>}
 
-                    {existingImage && 
-                        <img src={`http://127.0.0.1:8000/storage/${existingImage}`} width={`150`} />
-                    }
-                    <Inputbox Disabled Title={`Product`} Name={`Product`} Value={form.product_name} />
-                    <Selectionbox Disabled Title={`Category`} Name={`category_id`} Value={form.category_id} />
-                    <Inputbox Disabled Title={`Description`} Name={`Description`} Value={form.description} />
+                {existingImage && <img src={`http://127.0.0.1:8000/storage/${existingImage}`} width={`150`} /> }
+                <Inputbox Disabled Title={`Product`} Name={`Product`} Value={form.product_name} />
+                <Selectionbox Disabled Title={`Category`} Name={`category_id`} Value={form.category_id} />
+                <Inputbox Disabled Title={`Description`} Name={`Description`} Value={form.description} />
 
-                    <Button Submit Disabled={loading} Title={loading ? `Submitting...` : `Submit`} />
-                </form>
+                <Button Title={loading ? `Submitting...` : `Submit`} OnClick={handleSubmit} Disabled={loading} />
             </Section>
         </Main>
     )

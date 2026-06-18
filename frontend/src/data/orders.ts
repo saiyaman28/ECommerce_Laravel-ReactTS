@@ -3,6 +3,7 @@ export interface Orders {
     customer_id: number,
     total_price: string | number,
     status: `Pending` | `Processing` | `Shipped` | `Delivered` | `Canceled`,
+    payment_reference_number: string,
     created_at: Date,
     updated_at: Date,
 }

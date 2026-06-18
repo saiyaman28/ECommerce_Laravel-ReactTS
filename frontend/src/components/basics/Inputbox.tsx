@@ -8,7 +8,9 @@ type InputboxProps = {
     Type?: string
     Value?: string | number
     Name?: string
+    Accept?: string
     OnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    OnKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
     MinLength?: number
     Min?: number
     Max?: number
@@ -19,7 +21,7 @@ type InputboxProps = {
     Required?: boolean
 }
 
-export default function Inputbox({ID, Class, Title, Type, Value, Name, OnChange, Min, Max, MinLength, MinDate, MaxDate, AutoFocus, Disabled, Required}: InputboxProps) {
+export default function Inputbox({ID, Class, Title, Type, Value, Name, Accept, OnChange, OnKeyDown, Min, Max, MinLength, MinDate, MaxDate, AutoFocus, Disabled, Required}: InputboxProps) {
     const ValidType = (Type: string) => {
         const allowedTypes = [`text`, `email`, `date`, `password`, `datetime-local`, `month`, `url`, `number`, `time`, `file`, `search`]
         return allowedTypes.includes( Type ) && Type
@@ -32,7 +34,9 @@ export default function Inputbox({ID, Class, Title, Type, Value, Name, OnChange,
             value={Value}
             name={Name}
             type={ValidType(Type ?? 'text') ? (Type ?? 'text') : `text`}
+            accept={Accept}
             onChange={OnChange}
+            onKeyDown={OnKeyDown}
             placeholder={Title} 
             minLength={MinLength}
             min={MinDate ? MinDate.toISOString().split('T')[0] : Min}

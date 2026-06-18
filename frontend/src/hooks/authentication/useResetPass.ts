@@ -1,10 +1,10 @@
 import {useState} from 'react'
 import {useSearchParams, useNavigate} from 'react-router-dom'
-import {resetpassUsers} from "../../exporter/api"
-import {type Users} from "../../exporter/data"
+import {resetpassUsers} from '../../exporter/api'
+import {type Users} from '../../exporter/data'
 
 export default function useResetPass() {
-    const [form, setForm] = useState<Pick<Users, "password" | "password_confirmation">>({
+    const [form, setForm] = useState<Pick<Users, `password` | `password_confirmation`>>({
         password: ``,
         password_confirmation: ``,
     })
@@ -28,7 +28,7 @@ export default function useResetPass() {
         try {
             await resetpassUsers({email, token, password: form.password, password_confirmation: form.password_confirmation})
             alert(`Password reset successful!`)
-            navigate("/")
+            navigate(`/`)
         } 
         catch (err: any) {
             setError(`Validation error.`)

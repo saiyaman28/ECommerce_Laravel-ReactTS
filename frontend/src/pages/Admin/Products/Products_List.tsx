@@ -4,7 +4,7 @@ import {Main, Section, Group, Href, Inputbox, Button} from '../../../exporter/co
 import '../../../assets/styles/Pages/Product.sass'
 
 export default function ProductsListPage() {
-    const {search, setSearch, page, setPage, totalPages, paginatedItems, pages} = useRetrieveProducts()
+    const {search, setSearch, page, setPage, totalPages, paginatedItems, getVisiblePages} = useRetrieveProducts()
     
     useAddPageTitle(`Product`)
     useAddClassBody(`Create-Product-Page`)
@@ -28,11 +28,12 @@ export default function ProductsListPage() {
                     ))}
                 </Group>
                 {Number(totalPages) > 1 &&
-                    <Group Row>
+                    <Group>
                         <Button Title={`Prev`} OnClick={() => setPage(Number(page) - 1)} Disabled={Number(page) === 1} />
-                            {pages.map((pageNumber) => (
-                                <Button key={pageNumber} Title={String(pageNumber)} OnClick={() => setPage(pageNumber)} Disabled={page === pageNumber} />
-                            ))}
+                        {getVisiblePages(Number(page), Number(totalPages)).map((p, idx) => p === `...`
+                            ? <span key={idx}>{p}</span>
+                            : <Button key={idx} Title={String(p)} OnClick={() => setPage(Number(p))} Disabled={Number(page) === Number(p)} />
+                        )}
                         <Button Title={`Next`} OnClick={() => setPage(Number(page) + 1)} Disabled={Number(page) === Number(totalPages)} />
                     </Group>
                 }
