@@ -2,7 +2,8 @@ header, header *:not( ul ):not( div.collapse, div.collapsing )
     display: flex !important
 
 header 
-    background-color: #851022 !important
+    background-color: #222 !important
+    // border-bottom: 1px solid #000 !important
     width: 100% !important
     justify-content: center !important
     top: 0 !important
@@ -14,19 +15,29 @@ header
         justify-content: space-between !important
         align-items: center !important
 
-        > h1 
-            color: white !important
-            padding-right: 33px !important
+        // > h1 
+        //     color: white !important
+        //     padding-right: 33px !important
         
         > nav 
             
             > a 
                 color: white !important
-                font-size: 18px !important
+                font-size: 15px !important
                 font-weight: 700 !important
                 text-decoration: none !important
-                padding: 18px !important
+                padding: 12px !important
                 align-items: center !important
+
+            &#header-nav-left
+
+                .dropdown-menu
+                    width: unset !important
+                    margin-top: 13px !important
+                    border: none !important
+                    border-radius: unset !important
+                    padding: unset !important
+                    flex-direction: unset !important
 
 
 @media only screen and (min-width: 1267px) 
@@ -40,8 +51,7 @@ header
             > nav 
 
                 > a:hover 
-                    background-color: #357266
-                    color: #851022 !important
+                    text-decoration: underline !important
 
 @media only screen and (min-width: 767px) and (max-width: 1266px) 
 

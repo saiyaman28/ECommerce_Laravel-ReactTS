@@ -1,16 +1,31 @@
 Body.Login-Page
 
     main
+        justify-content: center !important
 
         > #login
 
-            > form
-                flex-direction: column !important
-                gap: 8px !important
-                align-items: center !important
+            > div.box
+                width: unset !important
 
-                > input
-                    align-self: center !important
+                > div.group
 
-                > button, > input[type="submit"]
-                    width: 100% !important
+                    > div.group:nth-child(1)
+                        gap: 12px !important
+                        margin-top: 12px !important
+                        margin-bottom: 22px !important
+
+                        > a
+                            font-size: 13px !important
+                            justify-content: end !important
+
+                    > button
+                        width: 100% !important
+                        margin-bottom: 8px !important
+
+                    > p  
+                        align-self: center !important
+                        gap: 3px !important
+                        
+                        > a
+                            font-size: 13px !important

@@ -28,14 +28,26 @@ export default function Header({}) {
     return (
         <header id={`header`}>
             <div id={`header-container`} className={`container`}>
-                <h1 id={`header-title`}>CARDEAL</h1>
-                <Group Row>
-                    <Inputbox Title={`Search products...`} Value={search} OnChange={(e) => setSearch(e.target.value)} OnKeyDown={searchBar} />
-                    <Button Title={`Search`} OnClick={performSearch} />
-                </Group>
+                <nav id={`header-nav-left`} className={`dropdown`}>
+                    <Href Title={`HOME`} Redirect={user?.role === `customer` ? `/customer` : user?.role === `admin` ? `/admin` : `/`} />
+
+                    <Href Title={`SEARCH`} Class='dropdown-toggle' DataBsToggle="dropdown" />
+                    {/* <div className="dropdown-menu p-4 text-body-secondary">
+                        <Inputbox Title={`Search products...`} Value={search} OnChange={(e) => setSearch(e.target.value)} OnKeyDown={searchBar} />
+                        <Button Title={`Search`} OnClick={performSearch} />
+                    </div> */}
+                    <ul className="dropdown-menu">
+                        <Group>
+                            <Inputbox Title={`Search products...`} Value={search} OnChange={(e) => setSearch(e.target.value)} OnKeyDown={searchBar} />
+                            <Button Title={`Search`} OnClick={performSearch} />
+                        </Group>
+                    </ul>
+                    {user?.role === `customer` && <Href Title={`CART`} Redirect={`/customer/cart`} />}
+                </nav>
+
                 {screenwidth > 766 ?
                     <nav id={`header-nav`}>
-                        <Href Title={`HOME`} Redirect={user?.role === `customer` ? `/customer` : user?.role === `admin` ? `/admin` : `/`} />
+
                         {user?.role === `customer` ?
                             <>
                                 <Href Title={`CART`} Redirect={`/customer/cart`} />
@@ -59,7 +71,6 @@ export default function Header({}) {
                             <>
                                 <Href Title={`LOGIN`} Redirect={`/login`} />
                                 <Href Title={`REGISTER`} Redirect={`/register`} />
-                                <Href Title={`FORGOT PASSWORD`} Redirect={`/forgot-password`} />
                             </>
                         }
                     </nav>

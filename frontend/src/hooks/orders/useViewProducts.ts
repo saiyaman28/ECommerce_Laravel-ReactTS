@@ -70,27 +70,31 @@ export default function useViewProducts() {
 
     const similarItems = currentProduct
         ? products
-            .filter((p) =>Number(p.category_id) === Number(currentProduct.category_id) &&Number(p.id) !== Number(currentProduct.id))
-            .slice(0, 6)
-            .map((p) => {
-                const productVariants = variants.filter((v) => Number(v.product_id) === Number(p.id))
+            .filter(
+                (p) =>
+                    Number(p.category_id) === Number(currentProduct.category_id) &&
+                    Number(p.id) !== Number(currentProduct.id)
+            )
+            .flatMap((p) => {
+                const variant = variants
+                    .filter((v) => Number(v.product_id) === Number(p.id))
+                    .sort((a, b) => Number(a.price) - Number(b.price))[0]
 
-                const variant =
-                    productVariants[0] ||
-                    productVariants.sort(
-                        (a, b) => Number(a.price) - Number(b.price)
-                    )[0]
+                if (!variant) return []
 
-                return {
+                return [{
                     id: variant.id,
                     product_name: p.product_name,
-                    category_name: categories.find((c) => Number(c.id) === Number(p.category_id))?.category_name,
-                    variant_name: variant?.variant_name,
-                    price: variant?.price,
-                    stock: variant?.stock,
-                    image: variant?.image,
-                }
+                    category_name:
+                        categories.find((c) => Number(c.id) === Number(p.category_id))
+                            ?.category_name,
+                    variant_name: variant.variant_name,
+                    price: variant.price,
+                    stock: variant.stock,
+                    image: variant.image,
+                }]
             })
+            .slice(0, 6)
         : []
 
     return {

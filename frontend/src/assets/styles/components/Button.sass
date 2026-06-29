@@ -1,19 +1,26 @@
 button, input[type="submit"], label:has(input[type="radio"]), label:has(input[type="file"]) 
-    background-color: #851022 !important
+    background-color: #153344 !important
     position: relative !important
     align-items: center !important
     justify-content: center !important
     color: white !important
     cursor: pointer !important
-    padding: 8px 13px !important
+    padding: 8px 16px !important
+    border-radius: 6px !important 
     font-weight: bold !important
     text-transform: uppercase !important
-    max-width: 228px !important
-    max-height: 38px !important
+    width: 228px !important
+    max-height: 40.58px !important
+
+    &:hover:not(:disabled), &:disabled.loading
+        filter: brightness(175%)
+
+    &:disabled:not(.loading)
+        background-color: #8e8e8e !important
+        cursor: default !important
 
     &:hover, &:disabled
-        background-color: #357266 !important
-        transition: .23s !important
+        transition: .22s !important
 
 label:has(input[type="radio"]) > input[type="radio"], label:has(input[type="file"]) > input[type="file"] 
     display: none !important

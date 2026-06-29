@@ -5,7 +5,7 @@ type SectionProps = {
     children?: React.ReactNode
     ID?: string
     Class?: string
-    Title?: string
+    Title?: React.ReactNode
     UpperLeft?: boolean
     UpperRight?: boolean
 }

@@ -1,42 +1,48 @@
 .card 
-    width: 100% !important
-    background-color: white !important
-    border-radius: unset !important
-    border-radius: 0 !important
+    width: 185px !important
+    // background-color: #153344 !important
+    border-radius: 6px !important
+    padding: 10px !important
 
-    > div 
-        position: relative !important
+    > img, > div:nth-child(1)
         width: 100% !important
         aspect-ratio: 1 !important
+        justify-self: center !important
+        margin-bottom: 20px !important
 
-        > img
-            width: 100% !important
-            height: 100% !important
-            transition: .33s !important
 
-        &:has( img.bgimage )
+    //     &:has( img.bgimage )
 
-            > img
-                position: absolute !important
+    //         > img
+    //             position: absolute !important
 
-                &.bgimage
-                    height: calc( 100% - 33% ) !important
-                    opacity: 0 !important
+    //             &.bgimage
+    //                 height: calc( 100% - 33% ) !important
+    //                 opacity: 0 !important
 
-                &:nth-child(2)
-                    width: 100% !important
-                    bottom: -33px !important
-                    z-index: 100 !important
+    //             &:nth-child(2)
+    //                 width: 100% !important
+    //                 bottom: -33px !important
+    //                 z-index: 100 !important
 
+    > div:has(>h3)
+        flex-direction: column !important
+
+        > h3
+            color: #153344 !important
+            font-weight: 800 !important
+
+        > h5:nth-child(3)
+            margin-top: 5px !important
     
-    > h2 
-        justify-content: center !important
+    // > h2 
+    //     justify-content: center !important
 
-    :hover
+    // :hover
 
-        &:has( img.bgimage )
+    //     &:has( img.bgimage )
 
-            > img
+    //         > img
 
-                &.bgimage
-                    opacity: 1 !important
+    //             &.bgimage
+    //                 opacity: 1 !important

@@ -1,20 +1,27 @@
-Body.Product-Page
+Body.Create-Product-Page
 
     main
 
-        > #list-product
-            justify-content: center !important
-            align-items: center !important
+        > #product
 
-            > div.group
-                gap: 8px !important
+            > div.group.row
+                width: unset !important
+                gap: 33px !important
                 justify-content: center !important
 
                 > div.group
-                    justify-content: center !important
-
+                    width: unset !important
+    
+                > div.group:nth-child(1)
+                    
                     > img
-                        width: 100px !important
+                        width: 400px !important
+                        aspect-ratio: 1 !important
+                
+                > div.group:nth-child(2)
 
-                > button, > input[type="submit"]
-                    align-self: center !important
+                    > div.group:nth-child(2)
+                        flex-direction: column !important
+
+                        > div.group
+                            margin: 0 !important

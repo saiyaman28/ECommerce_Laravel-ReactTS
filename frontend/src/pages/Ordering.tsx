@@ -1,7 +1,7 @@
 // import {React} from 'react'
 import {useStateContext} from '../context_provider'
 import {useAddPageTitle, useAddClassBody, useScreenWidth, useEnlistProducts} from '../exporter/hooks'
-import {Main, Section, Group, Inputbox, Button} from '../exporter/components'
+import {Main, Section, Group, Inputbox, Button, Card, Box, Href} from '../exporter/components'
 import '../assets/styles/Pages/Create_Product.sass'
 
 export default function OrderingPage() {
@@ -14,14 +14,13 @@ export default function OrderingPage() {
 
     return (
         <Main>
-            <Section Title={`ALL PRODUCTS`} ID={`list-product`}>
-                <Group>
+            <Section ID={`list-product`}>
+                <Group Wrap>
                     {paginatedItems.map((v) => (
-                        <Group Row key={v.id}>
-                            {v.image && <img src={`http://127.0.0.1:8000/storage/${v.image}`} width={`150`} />}
-                            {v?.product_name} - {v?.variant_name} - {v?.category_name} - ₱{v?.price} - Stock: {v?.stock}
-                            <Button Title={`View`} Redirect={user?.role === `customer` ? `/customer/product/${v.id}` : user?.role === `admin` ? `/admin/product/${v.id}` : `/product/${v.id}`} />
-                        </Group>
+                        <Href Object={
+                            <Card Image={v.image && `http://127.0.0.1:8000/storage/${v.image}`} ProductTitle={v?.product_name} VariantTitle={v?.variant_name} Price={`₱${v?.price}`} />} 
+                            Redirect={user?.role === `customer` ? `/customer/product/${v.id}` : user?.role === `admin` ? `/admin/product/${v.id}` : `/product/${v.id}`} 
+                        />
                     ))}
                 </Group>
                 {Number(totalPages) > 1 &&

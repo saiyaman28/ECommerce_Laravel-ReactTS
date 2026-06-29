@@ -1,6 +1,6 @@
 // import {React} from 'react'
 import {useAddPageTitle, useAddClassBody, useScreenWidth, UseLoginHook} from '../exporter/hooks'
-import {Main, Section, Group, Inputbox, Button} from '../exporter/components'
+import {Main, Section, Box, Group, Inputbox, Button, Href} from '../exporter/components'
 import '../assets/styles/Pages/Login.sass'
 
 export default function LoginPage() {
@@ -12,16 +12,19 @@ export default function LoginPage() {
 
     return (
         <Main>
-            <Section Title={`Login`} ID={`login`}>
-                {error && <p>{error}</p>}
-
-                <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={form.email} OnChange={(e) => setForm({ ...form, email: e.target.value })} Required />
-                <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={(e) => setForm({ ...form, password: e.target.value })} Required />
-                
-                <Button Title={loading ? `Submitting...` : `Submit`} OnClick={handleSubmit} Disabled={loading} />
-
-                <Button Redirect={`/register`} Title={`Register`} />
-                <Button Redirect={`/forgot-password`} Title={`Forgot Password`} />
+            <Section ID={`login`}>
+                <Box Title={`LOGIN`}>
+                    {error && <p>{error}</p>}
+                    <Group>
+                        <Group>
+                            <Inputbox Type={`email`} Title={`Email`} Name={`Email`} Value={form.email} OnChange={(e) => setForm({ ...form, email: e.target.value })} Required />
+                            <Inputbox Type={`password`} Title={`Password`} Name={`Password`} Value={form.password} OnChange={(e) => setForm({ ...form, password: e.target.value })} Required />
+                            <Href Title={`Forgot Password?`} Redirect={`/forgot-password`} />
+                        </Group>
+                        <Button Title={!loading ? `Submit` : `Submitting...`} Class={`${loading && `loading`}`} OnClick={handleSubmit} Disabled={loading} />
+                        <p>Don't have an account? <Href Redirect={`/register`} Title={`Sign up`} /></p>
+                    </Group>
+                </Box>
             </Section>
         </Main>
     )

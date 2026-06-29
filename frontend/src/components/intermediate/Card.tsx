@@ -4,23 +4,22 @@ import '../../assets/styles/Components/Card.sass'
 type CardProps = {
     ID?: string
     Class?: string
-    Title?: string
-    Image?: string
+    ProductTitle?: string
+    VariantTitle?: string
+    Price?: string
+    Image?: string | null
     BGImage?: string
 }
 
-export default function Card({ID, Class, Title, Image, BGImage}: CardProps) {
+export default function Card({ID, Class, ProductTitle, VariantTitle, Price, Image}: CardProps) {
     return (
         <label id={ID} className={`${Class} card`}>
+            {Image ? <img src={Image} /> : <div></div>}
             <div>
-                {Image && 
-                    <>
-                        {BGImage && <img src={BGImage} className={`bgimage`} />}
-                        <img src={Image} />
-                    </>
-                }
+                <h3>{ProductTitle}</h3>
+                <h5>{VariantTitle}</h5>
+                <h5>{Price}</h5>
             </div>
-            <h2>{Title}</h2>
         </label>
     )
 }
